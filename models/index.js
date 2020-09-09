@@ -1,5 +1,5 @@
 module.exports = {
-    Post: require("./post"),
+    Marker: require("./marker"),
     User: require("./user"),
     Project: require("./project")
   };
