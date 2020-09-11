@@ -62,9 +62,10 @@ module.exports = {
     .catch(err => res.status(422).json(err));
   },
   update: function(req, res) {
+    console.log(req.body)
     db.Project
-      .findOneAndUpdate({ _id: req.params.id }, req.body)
-      .populate("author", "_id name")
+      .findOneAndUpdate({ _id: req.params.id }, req.body.project)
+      .populate("author", "_id")
       .then(dbModel => res.json(dbModel))
       .catch(err => res.status(422).json(err));
   },

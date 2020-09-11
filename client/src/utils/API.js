@@ -22,6 +22,10 @@ export default {
         const token = localStorage.getItem("token")
         return axios.post("/api/projects", { token })
     },
+    updateProject: project => {
+        const token = localStorage.getItem("token")
+        return axios.put(`/api/projects/${project._id}`, { token, project })
+    },
     deleteProject: projectId => {
         const token = localStorage.getItem("token")
         return axios.delete(`/api/projects/${projectId}`, {

@@ -20,8 +20,8 @@ function App() {
     <Container>
       <BrowserRouter>
         <div>
-          <Link to="/">LOGIN</Link>
-          <Link to="/dashboard">DASHBOARD</Link>
+          {/* <Link to="/">LOGIN</Link>
+          <Link to="/dashboard">DASHBOARD</Link> */}
           {/* <Link to="/project">PROJECT</Link> */}
         </div>
         <Switch>

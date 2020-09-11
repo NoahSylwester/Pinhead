@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import API from '../utils/API';
+import { Link } from 'react-router-dom';
 
 const Container = styled.div`
     display: flex;
@@ -31,6 +32,7 @@ export default function Signup(props) {
             <input type="text" placeholder="username" value={username} onChange={event => setUsername(event.target.value)} />
             <input type="password" placeholder="password" value={password} onChange={event => setPassword(event.target.value)} />
             <button onClick={handleSignup}>Signup</button>
+            <Link to="/login">Back to login</Link>
         </Container>
     )
 }
