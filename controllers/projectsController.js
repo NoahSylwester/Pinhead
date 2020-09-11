@@ -47,8 +47,7 @@ module.exports = {
   findById: function(req, res) {
     db.Project
       .findById(req.params.id)
-      .populate("posts")
-      .populate("author", "_id name")
+      .populate("author", "_id")
       .then(dbModel => res.json(dbModel))
       .catch(err => res.status(422).json(err));
   },

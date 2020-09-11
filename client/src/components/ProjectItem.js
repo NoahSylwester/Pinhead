@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Marker(props) {
 
@@ -11,6 +12,6 @@ export default function Marker(props) {
     // }
 
     return (
-        <div>{props.project.title}</div>
+        <Link to={`/project/${props.project._id}`}>{props.project.title}</Link>
     )
 }

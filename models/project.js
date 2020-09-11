@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const projectSchema = new Schema({
-  title: { type: String, required: true },
+  title: { type: String, required: true, default: "New Project" },
   author: { type: Schema.Types.ObjectId, ref: "User" },
   image: {
     type: Buffer,

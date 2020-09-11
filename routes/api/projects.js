@@ -8,7 +8,7 @@ const withAuth = require('../../middleware');
 // Matches with "/api/projects"
 router.route("/")
   .get(withAuth, projectsController.findAll)
-  .post(withAuth, projectsController.create);
+  .post(withAuth, projectsController.create)
 
 // Matches with "/api/projects/search"
 router.route("/search")
@@ -20,7 +20,7 @@ router
   .route("/:id")
   .get(withAuth, projectsController.findById)
   .put(withAuth, projectsController.update)
-  // .delete(withAuth, projectsController.remove);
+  .delete(withAuth, projectsController.remove);
 
 // Matches with "/api/projects/image/:id"
 router

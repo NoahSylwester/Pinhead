@@ -11,22 +11,10 @@ router
     res.status(200).json({ success: 1 })
 })
 
-router
-.post('/check/admin', withAuth, function(req, res) {
-    User.findById(req._id)
-    .then((user) => {
-        if (user.authority === "Owner") {
-            res.status(200).json({ success: 1 })
-        }
-        else {
-            res.status(401).json({ forbidden: 0 })
-        }
-    })
-})
-
 // POST route to register a user
 router
 .post('/register', function (req, res) {
+    console.log(req.body)
     const { email, password, username: name } = req.body;
 
     User.find({email})
@@ -58,7 +46,7 @@ router
   })
   
   // POST route to login
-.post('/authenticate', function (req, res) {
+.post('/login', function (req, res) {
     const { email, password } = req.body;
     User.findOne({ email }, function (err, user) {
         if (err) {

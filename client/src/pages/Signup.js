@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import API from '../utils/API';
-import { Link } from 'react-router-dom';
 
 const Container = styled.div`
     display: flex;
@@ -12,27 +11,26 @@ const Container = styled.div`
     height: 100vh;
 `
 
-export default function Login(props) {
+export default function Signup(props) {
 
     const [email, setEmail] = useState("")
+    const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
 
-    const handleLogin = event => {
+    const handleSignup = event => {
         event.preventDefault()
-        API.loginUser(email, password)
-        .then(res => {
-            localStorage.setItem("token", res.data.token)
-            localStorage.setItem("userId", res.data.userId)
-        })
+        API.registerUser(username, password, email)
+        .then(res => console.log(res))
+        .catch(err => console.log(err))
     }
 
     return (
         <Container>
-            <h1>WELCOME TO PINHEAD</h1>
+            <h1>SIGNUP</h1>
             <input type="text" placeholder="email" value={email} onChange={event => setEmail(event.target.value)} />
+            <input type="text" placeholder="username" value={username} onChange={event => setUsername(event.target.value)} />
             <input type="password" placeholder="password" value={password} onChange={event => setPassword(event.target.value)} />
-            <button onClick={handleLogin}>Login</button>
-            <Link to="/signup">Not a user?</Link>
+            <button onClick={handleSignup}>Signup</button>
         </Container>
     )
 }

@@ -9,19 +9,9 @@ const UserSchema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },
   password: { type: String, required: true },
-  posts: [{ type: Schema.Types.ObjectId, ref: "Post" }],
-  threads: [{ type: Schema.Types.ObjectId, ref: "Thread" }],
-  snippets: [{ type: Schema.Types.ObjectId, ref: "Snippet" }],
-  authority: { type: String, required: true, default: "Unauthorized" }
+  markers: [{ type: Schema.Types.ObjectId, ref: "Marker" }],
+  projects: [{ type: Schema.Types.ObjectId, ref: "Project" }],
 });
-
-/*
-authority options:
-Owner
-Admin
-Authorized
-Unauthorized
-*/
 
 UserSchema.pre('save', function(next) {
   // Check if document is new or a new password has been set
