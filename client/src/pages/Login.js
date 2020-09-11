@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import API from '../utils/API';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 const Container = styled.div`
     display: flex;
@@ -14,8 +14,11 @@ const Container = styled.div`
 
 export default function Login(props) {
 
+    const history = useHistory()
+
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [errorMessage, setErrorMessage] = useState("")
 
     const handleLogin = event => {
         event.preventDefault()
@@ -23,7 +26,9 @@ export default function Login(props) {
         .then(res => {
             localStorage.setItem("token", res.data.token)
             localStorage.setItem("userId", res.data.userId)
+            history.push("/dashboard")
         })
+        .catch(err => setErrorMessage(err.response.data.error))
     }
 
     return (
@@ -33,6 +38,7 @@ export default function Login(props) {
             <input type="password" placeholder="password" value={password} onChange={event => setPassword(event.target.value)} />
             <button onClick={handleLogin}>Login</button>
             <Link to="/signup">Not a user?</Link>
+            {errorMessage ? <h3>{errorMessage}</h3> : <></>}
         </Container>
     )
 }

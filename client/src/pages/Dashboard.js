@@ -13,6 +13,12 @@ const Container = styled.div`
     height: 100vh;
 `
 
+const LogoutButton = styled.button`
+    position: absolute;
+    top: 5px;
+    left: 10px;
+`
+
 export default function Dashboard(props) {
 
     const [projects, setProjects] = useState([]);
@@ -25,6 +31,12 @@ export default function Dashboard(props) {
         })
     }, [])
 
+    const handleLogout = () => {
+        localStorage.setItem("token", "")
+        localStorage.setItem("userId", "")
+        history.push("/")
+    }
+
     const handleNewProject = () => {
         API.createProject()
         .then(res => {
@@ -34,6 +46,7 @@ export default function Dashboard(props) {
 
     return (
         <Container>
+            <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
             <h1>DASHBOARD</h1>
             <button onClick={handleNewProject}>New Project</button>
             {projects.length ? projects.map(project => <ProjectItem key={project._id} project={project} />) : <></>}

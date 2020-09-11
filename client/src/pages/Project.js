@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import API from '../utils/API';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useHistory } from 'react-router-dom';
 import Marker from '../components/Marker';
 
 const Page = styled.div`
@@ -43,7 +43,9 @@ const Canvas = styled.canvas`
 export default function Project(props) {
 
     const { id } = useParams()
+    const history = useHistory()
 
+    const [deletePressed, setDeletePressed] = useState(false)
     const [project, setProject] = useState({
         _id: "",
         title: "",
@@ -81,7 +83,10 @@ export default function Project(props) {
 
     const handleDelete = () => {
         API.deleteProject(id)
-        .then(res => console.log(res))
+        .then(res => {
+            history.push("/dashboard")
+            console.log(res)
+        })
     }
 
     return (
@@ -89,7 +94,13 @@ export default function Project(props) {
             <BackButton to={"/dashboard"}>Back</BackButton>
             <DataSection>
                 <h1 contentEditable="true" style={{ textAlign: "center" }} onBlur={handleTitleUpdate}>{project.title}</h1>
-                <button onClick={handleDelete}>Delete</button>
+                {deletePressed ? 
+                <div style={{ display: "flex" }}>
+                    <button onClick={handleDelete}>Yes, delete</button>
+                    <button onClick={() => setDeletePressed(false)}>Cancel</button>
+                </div>
+                :
+                <button onClick={() => setDeletePressed(true)}>Delete</button>}
                 <input type="file" />
                 <p>Click on image to add a marker!</p>
                 {project.markers.length ? 
