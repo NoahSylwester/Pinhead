@@ -2,7 +2,15 @@ import React from 'react';
 
 export default function Marker(props) {
 
+    // {
+    //     title: "",
+    //     author: "",
+    //     image: "",
+    //     date_created: "",
+    //     markers: [],
+    // }
+
     return (
-        <div>MARKER</div>
+        <div>{props.project.title}</div>
     )
 }
