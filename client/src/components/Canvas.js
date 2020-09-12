@@ -21,16 +21,16 @@ function Canvas(props) {
         let canvasContainer = document.querySelector("#canvas-container");
         let imageRatio;
         let c = canvas.getContext("2d");
-        // if (isFirstRender.current) {
-            canvas.width = canvasContainer.offsetWidth
-            canvas.height = canvasContainer.offsetHeight
-        //     isFirstRender.current = false;
-        // }
-
+        // fill container with canvas
+        canvas.width = canvasContainer.offsetWidth
+        canvas.height = canvasContainer.offsetHeight
+        // erase previous canvas
         c.clearRect(0, 0, canvas.width, canvas.height)
+        // load image
         var image = new Image();
         image.src = props.imagePath
         image.onload = function() {
+            // logic to fit image into container
             imageRatio = image.width / image.height
             setTheImageRatio(imageRatio)
             let isWidthier = false;
@@ -45,6 +45,7 @@ function Canvas(props) {
             }
             c.fillStyle = "black";
             c.strokeStyle = "red";
+            // render marker dots
             for (let i = 0; i < props.project.markers.length; i++) {
                 console.log(props.project.markers[i])
                 let x;
@@ -54,6 +55,7 @@ function Canvas(props) {
                 c.beginPath();
                 c.arc(x, y, 3, 0, 2 * Math.PI);
                 c.fill();
+                // render highlight circle
                 if (props.project.markers[i]._id === props.selectedMarker) {
                     c.beginPath();
                     c.arc(x, y, 10, 0, 2 * Math.PI);
