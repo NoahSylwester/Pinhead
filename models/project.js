@@ -8,6 +8,9 @@ const projectSchema = new Schema({
     type: Buffer,
     required: false,
   },
+  contentType: {
+    type: String,
+  },
   date_created: {
     type: Date,
     required: true,

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import API from '../utils/API';
 import { useParams, Link, useHistory } from 'react-router-dom';
 import Marker from '../components/Marker';
+import Canvas from '../components/Canvas';
 
 const Page = styled.div`
     display: flex;
@@ -34,18 +35,15 @@ const ImageSection = styled.div`
     padding: 10px;
 `
 
-const Canvas = styled.canvas`
-    width: 100%;
-    height: 100%;
-    border: 1px solid black;
-`
-
 export default function Project(props) {
 
     const { id } = useParams()
     const history = useHistory()
+    const renderNumber = useRef(1)
 
     const [deletePressed, setDeletePressed] = useState(false)
+    const [submitImagePressed, setSubmitImagePressed] = useState(false)
+    const [imageStage, setImageStage] = useState({ data: "", config: "" })
     const [project, setProject] = useState({
         _id: "",
         title: "",
@@ -54,6 +52,7 @@ export default function Project(props) {
         date_created: "",
         markers: [],
       });
+    const [update, setUpdate] = useState(0)
 
     useEffect(() => {
         API.queryProject(id)
@@ -63,22 +62,50 @@ export default function Project(props) {
     }, [])
 
     useEffect(() => {
-        API.updateProject(project)
+        if (renderNumber.current < 1) {
+            renderNumber.current++;
+            return;
+        }
+        console.log(project)
+        API.queryProject(project._id)
         .then(res => {
-            console.log(res)
-            // API.queryProject(id)
-            // .then(response => {
-            //     setProject(response.data)
-            // })
+            console.log("PROJECT  ", res)
+            API.queryProject(id)
+            .then(response => {
+                setProject(response.data)
+            })
         })
-    }, [project])
+    }, [update]) //[project])
 
     const handleTitleUpdate = event => {
-        console.log(event.target.textContent)
-        setProject({
-            ...project,
-            title: event.target.textContent
+        const newTitle = event.target.textContent
+        API.updateProject({ ...project, newTitle })
+        .then(res => {
+            console.log(res)
+            API.queryProject(id)
+            .then(response => {
+                setProject(response.data)
+            })
         })
+    }
+
+    const handleImageUpload = event => {
+        const imageFile = event.target.files[0];
+        let data = new FormData();  
+        data.append('file', imageFile);
+        const config = {
+            headers: {
+            'Accept': 'application/json',
+            }
+          };
+        setImageStage({ data, config })
+    }
+
+    const handleImageUpdate = event => {
+        console.log("HERE")
+        let { data, config } = imageStage;
+        API.updateProjectImage(project._id, data, config)
+        .then(res => console.log(res.data))
     }
 
     const handleDelete = () => {
@@ -101,15 +128,30 @@ export default function Project(props) {
                 </div>
                 :
                 <button onClick={() => setDeletePressed(true)}>Delete</button>}
-                <input type="file" />
+
+                {submitImagePressed ? 
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                    <div style={{ textAlign: "center" }}>
+                        <input type="file" onChange={handleImageUpload}/>
+                    </div>
+                    <div style={{ textAlign: "center" }}>
+                        <button onClick={handleImageUpdate}>Submit</button>
+                        <button onClick={() => setSubmitImagePressed(false)}>Cancel</button>
+                    </div>
+                </div>
+                :
+                <button onClick={() => setSubmitImagePressed(true)}>Update image</button>}
                 <p>Click on image to add a marker!</p>
+                <ol style={{ width: "70%", padding: 0 }}>
                 {project.markers.length ? 
                 project.markers.map(marker => {
-                    return <Marker>{marker}</Marker>
+                    return <Marker key={marker._id} marker={marker} setUpdate={setUpdate}></Marker>
                 }) : <></>}
+                </ol>
             </DataSection>
             <ImageSection>
-                <Canvas></Canvas>
+                {project._id ? <Canvas imagePath={`/api/projects/image/${project._id}`} markers={project.markers} project={project} setUpdate={setUpdate}></Canvas> : <></>}
+                {/* <img src={`/api/projects/image/${project._id}`} /> */}
             </ImageSection>
         </Page>
     )

@@ -5,8 +5,9 @@ const fs = require('fs');
 module.exports = {
   findAll: function(req, res) {
     db.Project
-      .find(req.query)
+      .find({ author: req._id })
       .populate("author", "_id name")
+      .select("-image")
       .then(dbModel => res.json(dbModel))
       .catch(err => res.status(422).json(err));
   },
@@ -48,6 +49,8 @@ module.exports = {
     db.Project
       .findById(req.params.id)
       .populate("author", "_id")
+      .populate("markers")
+      .select("-image")
       .then(dbModel => res.json(dbModel))
       .catch(err => res.status(422).json(err));
   },
@@ -64,7 +67,7 @@ module.exports = {
   update: function(req, res) {
     console.log(req.body)
     db.Project
-      .findOneAndUpdate({ _id: req.params.id }, req.body.project)
+      .findOneAndUpdate({ _id: req.params.id }, { ...req.body.project })
       .populate("author", "_id")
       .then(dbModel => res.json(dbModel))
       .catch(err => res.status(422).json(err));
@@ -79,9 +82,11 @@ module.exports = {
     };
     db.Project
       .findOneAndUpdate({ _id: req.params.id }, { ...finalImg })
-      // .populate("author", "_id name")
+      // .populate("author", "_id")
+      .select("-image")
       .then(dbModel => {
-        console.log('sucesss')
+        console.log('success')
+        console.log(dbModel)
         fs.unlinkSync(req.file.path)
         return res.json(dbModel)
       })
@@ -95,7 +100,7 @@ module.exports = {
     db.Project
       .deleteOne({ _id: req.params.id })
       .then(dbModel => {
-        db.Marker.deleteMany({Project: req.params.id})
+        db.Marker.deleteMany({ project: req.params.id })
         .then(() => res.json(dbModel))
         .catch(err => res.status(422).json(err));
       })

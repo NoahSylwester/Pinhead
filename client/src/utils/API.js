@@ -26,6 +26,11 @@ export default {
         const token = localStorage.getItem("token")
         return axios.put(`/api/projects/${project._id}`, { token, project })
     },
+    updateProjectImage: function(id, updateData, config) {
+        const token = localStorage.getItem('token');
+        return axios.put(`/api/projects/image/${id}`, updateData, { ...config, method: "PUT", headers: {'x-access-token': token}});
+        // return fetch(`/api/projects/image/${id}`, { ...config, body: updateData, method: "PUT", headers: {'x-access-token': token}});
+      },
     deleteProject: projectId => {
         const token = localStorage.getItem("token")
         return axios.delete(`/api/projects/${projectId}`, {
@@ -38,16 +43,18 @@ export default {
             headers: {'x-access-token': token},
         })
     },
-    createMarker: project => {
+    createMarker: (projectId, x, y) => {
         const token = localStorage.getItem("token")
-        return axios.post("/api/markers", { project, token })
+        return axios.post("/api/markers", { project: projectId, x, y, token })
     },
     updateMarker: marker => {
         const token = localStorage.getItem("token")
-        return axios.put("/api/markers", { marker, token })
+        return axios.put(`/api/markers/${marker._id}`, { marker, token })
     },
     deleteMarker: markerId => {
         const token = localStorage.getItem("token")
-        return axios.delete("/api/markers", { markerId, token })
+        return axios.delete(`/api/markers/${markerId}`, {
+            headers: {'x-access-token': token},
+        })
     },
 }

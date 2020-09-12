@@ -10,7 +10,7 @@ router.route("/")
 router
   .route("/:id")
   .get(markersController.findById)
-  .post(markersController.createReply)
   .put(markersController.update)
+  .delete(markersController.remove)
 
 module.exports = router;

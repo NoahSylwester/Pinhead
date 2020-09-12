@@ -21,63 +21,41 @@ module.exports = {
       .catch(err => res.status(422).json(err));
   },
   create: function(req, res) {
-    const entity = req.body.parentEntityType;
-    const Entity = entity.charAt(0).toUpperCase() + entity.substring(1);
+    console.log("BODY: ", req.body)
     db.User.findById(req._id)
       .then(function({ _id }) {
       db.Marker
         .create({
           ...req.body,
           author: _id,
-          [req.body.parentEntityType]: req.body.entityId
         })
-        .then(Marker => {
-          db[Entity].findOneAndUpdate({ _id: req.body.entityId }, { lastActivity: Date.now(), $push: { Markers: Marker._id } }, { new: true })
+        .then(marker => {
+          console.log("MARKER: ", marker)
+          db.Project.findOneAndUpdate({ _id: req.body.project }, { $push: { markers: marker._id } }, { new: true })
           .then((entity) => {
-            return res.json(Marker)
+            console.log("ENTITY: ", entity)
+            return res.json(marker)
           })
         })
         .catch(err => res.status(422).json(err));
       })
     .catch(err => res.status(422).json(err));
   },
-  createReply: function(req, res) {
-    const entity = req.body.parentEntityType;
-    const Entity = entity.charAt(0).toUpperCase() + entity.substring(1);
-    db.User.findById(req._id)
-      .then(function({ _id }) {
-        db.Marker
-          .create({
-            ...req.body,
-            author: _id,
-            [req.body.parentEntityType]: req.body.entityId
-          })
-          .then(reply => {
-            db[Entity].findOneAndUpdate({ _id: req.body.entityId }, { lastActivity: Date.now() }, { new: true })
-            .then(() => {
-              db.Marker.findOneAndUpdate({ _id: req.params.id }, { $push: { replies: reply._id } }, { new: true })
-              .then(() => res.json(reply))
-            })
-          })
-          .catch(err => res.status(422).json(err));
-        })
-        .catch(err => res.status(422).json(err));
-  },
   update: function(req, res) {
+    console.log(req.body)
     db.Marker
-      .findOneAndUpdate({ _id: req.params.id }, req.body)
+      .findOneAndUpdate({ _id: req.params.id }, req.body.marker, { new: true })
       .populate("author", "_id name")
-      .then(dbModel => res.json(dbModel))
+      .then(dbModel => {
+        console.log(dbModel)
+        res.json(dbModel)
+      })
       .catch(err => res.status(422).json(err));
   },
   remove: function(req, res) {
+    console.log(req.body)
     db.Marker
-      .findOneAndUpdate({ _id: req.params.id }, {content: null}, { new: true })
-      .populate({
-        path: 'replies',
-        populate: { path: 'author', select: "_id name"}
-      })
-      .populate('author', '_id name')
+      .deleteOne({ _id: req.params.id })
       .then(dbModel => res.json(dbModel))
       .catch(err => res.status(422).json(err));
   }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import API from '../utils/API';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 const Container = styled.div`
     display: flex;
@@ -14,6 +14,8 @@ const Container = styled.div`
 
 export default function Signup(props) {
 
+    const history = useHistory()
+
     const [email, setEmail] = useState("")
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
@@ -21,7 +23,11 @@ export default function Signup(props) {
     const handleSignup = event => {
         event.preventDefault()
         API.registerUser(username, password, email)
-        .then(res => console.log(res))
+        .then(res => {
+            console.log(res)
+            alert("User successfully created")
+            history.push("/")
+        })
         .catch(err => console.log(err))
     }
 
@@ -32,7 +38,7 @@ export default function Signup(props) {
             <input type="text" placeholder="username" value={username} onChange={event => setUsername(event.target.value)} />
             <input type="password" placeholder="password" value={password} onChange={event => setPassword(event.target.value)} />
             <button onClick={handleSignup}>Signup</button>
-            <Link to="/login">Back to login</Link>
+            <Link to="/">Back to login</Link>
         </Container>
     )
 }
