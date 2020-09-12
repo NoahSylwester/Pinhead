@@ -19,9 +19,11 @@ router
 
     User.find({email})
         .then((response) => {
+            console.log(response)
             if (response.length === 0) {
                 User.find({name})
                     .then((response) => {
+                        console.log(response)
                         if (response.length === 0) {
                             const user = new User({ email, password, name });
                             user.save(function (err) {
