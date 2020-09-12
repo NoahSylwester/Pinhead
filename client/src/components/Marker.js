@@ -26,8 +26,16 @@ export default function Marker(props) {
         })
     }
 
+    const handleOnMouseEnter = event => {
+        props.setSelectedMarker(props.marker._id)
+    }
+
+    const handleOnMouseLeave = event => {
+        props.setSelectedMarker("")
+    }
+
     return (
-        <ListItem>
+        <ListItem onMouseEnter={handleOnMouseEnter} onMouseLeave={handleOnMouseLeave}>
             <p onBlur={handleMarkerUpdate} contentEditable={true}>{props.marker.content}</p>
             {isDeletePressed ? 
             <>

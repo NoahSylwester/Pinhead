@@ -33,14 +33,20 @@ export default function Canvas(props) {
                 c.drawImage(image, 0, 0, (canvas.height/image.height) * image.width, canvas.height);
             }
             c.fillStyle = "black";
+            c.strokeStyle = "red";
             for (let i = 0; i < props.project.markers.length; i++) {
                 console.log(props.project.markers[i])
                 c.beginPath();
                 c.arc(props.project.markers[i].x, props.project.markers[i].y, 3, 0, 2 * Math.PI);
                 c.fill();
+                if (props.project.markers[i]._id === props.selectedMarker) {
+                    c.beginPath();
+                    c.arc(props.project.markers[i].x, props.project.markers[i].y, 10, 0, 2 * Math.PI);
+                    c.stroke();
+                }
             }
         }
-      }, [props.project]);
+      }, [props.project, props.selectedMarker]);
 
     const handleMouseDown = event => {
         let x = event.nativeEvent.offsetX;

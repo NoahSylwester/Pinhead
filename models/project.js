@@ -10,6 +10,8 @@ const projectSchema = new Schema({
   },
   contentType: {
     type: String,
+    required: true,
+    default: "image/png"
   },
   date_created: {
     type: Date,

@@ -53,6 +53,7 @@ export default function Project(props) {
         markers: [],
       });
     const [update, setUpdate] = useState(0)
+    const [selectedMarker, setSelectedMarker] = useState("")
 
     useEffect(() => {
         API.queryProject(id)
@@ -75,7 +76,7 @@ export default function Project(props) {
                 setProject(response.data)
             })
         })
-    }, [update]) //[project])
+    }, [update])
 
     const handleTitleUpdate = event => {
         const newTitle = event.target.textContent
@@ -102,10 +103,12 @@ export default function Project(props) {
     }
 
     const handleImageUpdate = event => {
-        console.log("HERE")
         let { data, config } = imageStage;
         API.updateProjectImage(project._id, data, config)
-        .then(res => console.log(res.data))
+        .then(res => {
+            console.log(res.data)
+            history.go(0)
+        })
     }
 
     const handleDelete = () => {
@@ -145,12 +148,12 @@ export default function Project(props) {
                 <ol style={{ width: "70%", padding: 0 }}>
                 {project.markers.length ? 
                 project.markers.map(marker => {
-                    return <Marker key={marker._id} marker={marker} setUpdate={setUpdate}></Marker>
+                    return <Marker key={marker._id} marker={marker} setUpdate={setUpdate} setSelectedMarker={setSelectedMarker}></Marker>
                 }) : <></>}
                 </ol>
             </DataSection>
             <ImageSection>
-                {project._id ? <Canvas imagePath={`/api/projects/image/${project._id}`} markers={project.markers} project={project} setUpdate={setUpdate}></Canvas> : <></>}
+                {project._id ? <Canvas imagePath={`/api/projects/image/${project._id}`} markers={project.markers} project={project} setUpdate={setUpdate} selectedMarker={selectedMarker}></Canvas> : <></>}
                 {/* <img src={`/api/projects/image/${project._id}`} /> */}
             </ImageSection>
         </Page>
