@@ -80,7 +80,7 @@ export default function Project(props) {
 
     const handleTitleUpdate = event => {
         const newTitle = event.target.textContent
-        API.updateProject({ ...project, newTitle })
+        API.updateProject({ ...project, title: newTitle })
         .then(res => {
             console.log(res)
             API.queryProject(id)

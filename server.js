@@ -26,10 +26,7 @@ app.use(express.json());
 
 // Add routes, both API and view
 app.use(routes);
-console.log("------")
-console.log(process.env.DB_URI)
-console.log(process.env.SECRET)
-console.log("------")
+
 // Connect to the Mongo DB
 mongoose.connect(process.env.DB_URI || "mongodb://localhost/pinhead", { useNewUrlParser: true, useUnifiedTopology: true });
 // fix deprecation warnings
