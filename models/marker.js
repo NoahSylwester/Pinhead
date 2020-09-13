@@ -6,6 +6,7 @@ const markerSchema = new Schema({
   author: { type: Schema.Types.ObjectId, ref: "User" },
   content: { type: String, required: true, default: "Enter text!" },
   color: { type: String, required: true, default: "black" },
+  shape: { type: String, required: true, default: "circle" },
   data_keys: [{ type: String }],
   data_values: [{ type: String }],
   x: Number,

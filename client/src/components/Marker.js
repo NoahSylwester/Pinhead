@@ -13,6 +13,7 @@ export default function Marker(props) {
 
     const [isDeletePressed, setIsDeletePressed] = useState(false)
     const [color, setColor] = useState(props.marker.color)
+    const [shape, setShape] = useState(props.marker.shape)
 
     const handleContentUpdate = event => {
         API.updateMarker({ ...props.marker, content: event.target.textContent })
@@ -22,6 +23,15 @@ export default function Marker(props) {
     const handleColorUpdate = event => {
         setColor(event.target.value)
         API.updateMarker({ ...props.marker, color: event.target.value })
+        .then(res => {
+            console.log(res.data)
+            props.setUpdate(Math.random())
+        })
+    }
+
+    const handleShapeUpdate = event => {
+        setShape(event.target.value)
+        API.updateMarker({ ...props.marker, shape: event.target.value })
         .then(res => {
             console.log(res.data)
             props.setUpdate(Math.random())
@@ -48,6 +58,12 @@ export default function Marker(props) {
         <ListItem onMouseEnter={handleOnMouseEnter} onMouseLeave={handleOnMouseLeave}>
             <p onBlur={handleContentUpdate} contentEditable={true}>{props.marker.content}</p>
             <input type="color" value={color} onChange={handleColorUpdate} />
+            <select value={shape} onChange={handleShapeUpdate}>
+                <option value="circle">circle</option>
+                <option value="square">square</option>
+                <option value="rhombus">rhombus</option>
+                <option value="triangle">triangle</option>
+            </select>
             {isDeletePressed ? 
             <>
                 <button onClick={handleDelete}>Confirm</button>

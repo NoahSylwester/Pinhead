@@ -54,6 +54,7 @@ export default function Project(props) {
       });
     const [update, setUpdate] = useState(0)
     const [selectedMarker, setSelectedMarker] = useState("")
+    const [selectorColor, setSelectorColor] = useState("red")
 
     useEffect(() => {
         API.queryProject(id)
@@ -144,6 +145,10 @@ export default function Project(props) {
                 </div>
                 :
                 <button onClick={() => setSubmitImagePressed(true)}>Update image</button>}
+                <div>
+                    <p>Selector color</p>
+                    <input type="color" value={selectorColor} onChange={event => setSelectorColor(event.target.value)}/>
+                </div>
                 <p>Click on image to add a marker!</p>
                 <ol style={{ width: "70%", padding: 0 }}>
                 {project.markers.length ? 
@@ -153,7 +158,14 @@ export default function Project(props) {
                 </ol>
             </DataSection>
             <ImageSection>
-                {project._id ? <Canvas imagePath={`/api/projects/image/${project._id}`} markers={project.markers} project={project} setUpdate={setUpdate} selectedMarker={selectedMarker}></Canvas> : <></>}
+                {project._id ? 
+                <Canvas 
+                    imagePath={`/api/projects/image/${project._id}`} 
+                    markers={project.markers} project={project} 
+                    setUpdate={setUpdate} 
+                    selectedMarker={selectedMarker} 
+                    selectorColor={selectorColor}>    
+                </Canvas> : <></>}
                 {/* <img src={`/api/projects/image/${project._id}`} /> */}
             </ImageSection>
         </Page>

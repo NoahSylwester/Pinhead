@@ -40,7 +40,7 @@ function Canvas(props) {
             else {
                 c.drawImage(image, 0, 0, (canvas.height/image.height) * image.width, canvas.height);
             }
-            c.strokeStyle = "red";
+            c.strokeStyle = props.selectorColor;
             // render marker dots
             for (let i = 0; i < props.project.markers.length; i++) {
                 c.fillStyle = props.project.markers[i].color;
@@ -48,9 +48,38 @@ function Canvas(props) {
                 let y;
                 x = props.project.markers[i].x * imageRatio * (!isWidthier ? canvas.height / imageRatio : canvas.width);
                 y = props.project.markers[i].y * imageRatio * (isWidthier ? canvas.width / imageRatio : canvas.height);
-                c.beginPath();
-                c.arc(x, y, 3, 0, 2 * Math.PI);
-                c.fill();
+                switch (props.project.markers[i].shape) {
+                    case "circle":
+                        c.beginPath();
+                        c.arc(x, y, 3, 0, 2 * Math.PI);
+                        c.fill();
+                        break;
+                    case "square":
+                        c.fillRect(x - 3, y - 3, 6, 6);
+                        break;
+                    case "triangle":
+                        c.beginPath();
+                        c.moveTo(x, y - 3);
+                        c.lineTo(x - Math.sqrt(13), y + 3);
+                        c.lineTo(x + Math.sqrt(13), y + 3);
+                        c.lineTo(x, y - 3);
+                        c.fill();
+                        break;
+                    case "rhombus":
+                        c.beginPath();
+                        c.moveTo(x, y - 4);
+                        c.lineTo(x - 4, y);
+                        c.lineTo(x, y + 4);
+                        c.lineTo(x + 4, y);
+                        c.lineTo(x, y - 4);
+                        c.fill();
+                        break;
+                    default:
+                        c.beginPath();
+                        c.arc(x, y, 3, 0, 2 * Math.PI);
+                        c.fill();
+                        break;
+                }
                 // render highlight circle
                 if (props.project.markers[i]._id === props.selectedMarker) {
                     c.beginPath();
