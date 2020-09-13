@@ -6,7 +6,6 @@ import { withResizeDetector } from 'react-resize-detector';
 const Container = styled.div`
     width: 100%;
     height: 100%;
-    border: 1px solid black;
 `
 
 function Canvas(props) {
