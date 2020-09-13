@@ -40,11 +40,10 @@ function Canvas(props) {
             else {
                 c.drawImage(image, 0, 0, (canvas.height/image.height) * image.width, canvas.height);
             }
-            c.fillStyle = "black";
             c.strokeStyle = "red";
             // render marker dots
             for (let i = 0; i < props.project.markers.length; i++) {
-                console.log(props.project.markers[i])
+                c.fillStyle = props.project.markers[i].color;
                 let x;
                 let y;
                 x = props.project.markers[i].x * imageRatio * (!isWidthier ? canvas.width * imageRatio : canvas.width);

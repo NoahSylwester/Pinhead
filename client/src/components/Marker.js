@@ -12,10 +12,20 @@ const ListItem = styled.li`
 export default function Marker(props) {
 
     const [isDeletePressed, setIsDeletePressed] = useState(false)
+    const [color, setColor] = useState(props.marker.color)
 
-    const handleMarkerUpdate = event => {
+    const handleContentUpdate = event => {
         API.updateMarker({ ...props.marker, content: event.target.textContent })
         .then(res => console.log(res.data))
+    }
+
+    const handleColorUpdate = event => {
+        setColor(event.target.value)
+        API.updateMarker({ ...props.marker, color: event.target.value })
+        .then(res => {
+            console.log(res.data)
+            props.setUpdate(Math.random())
+        })
     }
 
     const handleDelete = event => {
@@ -36,7 +46,8 @@ export default function Marker(props) {
 
     return (
         <ListItem onMouseEnter={handleOnMouseEnter} onMouseLeave={handleOnMouseLeave}>
-            <p onBlur={handleMarkerUpdate} contentEditable={true}>{props.marker.content}</p>
+            <p onBlur={handleContentUpdate} contentEditable={true}>{props.marker.content}</p>
+            <input type="color" value={color} onChange={handleColorUpdate} />
             {isDeletePressed ? 
             <>
                 <button onClick={handleDelete}>Confirm</button>
