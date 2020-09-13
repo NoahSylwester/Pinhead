@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import API from '../utils/API';
 import styled from 'styled-components';
 import DataRow from './DataRow'
 
 const ListItem = styled.li`
     width: 100%;
-    border: 1px solid black;
+    border: 1px solid gray;
     margin: 10px;
     padding: 5px;
+    position: relative;
+`
+
+const ManualSelectionButton = styled.button`
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: ${props => props.bool ? "lightgreen": "lightgray"};
+    border: none;
 `
 
 export default function Marker(props) {
@@ -16,6 +25,7 @@ export default function Marker(props) {
     const [color, setColor] = useState(props.marker.color)
     const [shape, setShape] = useState(props.marker.shape)
     const [newDataKey, setNewDataKey] = useState("")
+    const [isManuallySelected, setIsManuallySelected] = useState(false)
 
     const handleContentUpdate = event => {
         API.updateMarker({ ...props.marker, content: event.target.textContent })
@@ -102,8 +112,13 @@ export default function Marker(props) {
         props.setSelectedMarker("")
     }
 
+    useEffect(() => {
+        props.handleManualSelection(props.index, isManuallySelected)
+    }, [isManuallySelected])
+
     return (
         <ListItem onMouseEnter={handleOnMouseEnter} onMouseLeave={handleOnMouseLeave}>
+            <ManualSelectionButton onClick={() => setIsManuallySelected(!isManuallySelected)} bool={isManuallySelected}>{isManuallySelected ? "Unselect" : "Select"}</ManualSelectionButton>
             <p onBlur={handleContentUpdate} contentEditable={true}>{props.marker.content}</p>
             <div data>
                 {props.marker.data_keys.map((data_key, i) => {

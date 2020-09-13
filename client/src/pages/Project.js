@@ -155,6 +155,12 @@ export default function Project(props) {
         setPresetDataValues([])
     }
 
+    const handleManualSelection = (index, isManuallySelected) => {
+        const markers = project.markers;
+        markers[index].isManuallySelected = isManuallySelected;
+        setProject({ ...project, markers })
+    }
+
     return (
         <Page>
             <BackButton to={"/dashboard"}>Back</BackButton>
@@ -212,8 +218,17 @@ export default function Project(props) {
                 <p>Click on image to add a marker!</p>
                 <ol style={{ width: "70%", padding: 0 }}>
                 {project.markers.length ? 
-                project.markers.map(marker => {
-                    return <Marker key={marker._id} marker={marker} setUpdate={setUpdate} setSelectedMarker={setSelectedMarker}></Marker>
+                project.markers.map((marker, i) => {
+                    return (
+                    <Marker 
+                        key={marker._id} 
+                        marker={marker} 
+                        index={i}
+                        setUpdate={setUpdate} 
+                        setSelectedMarker={setSelectedMarker}
+                        handleManualSelection={handleManualSelection}
+                    >
+                    </Marker>)
                 }) : <></>}
                 </ol>
             </DataSection>

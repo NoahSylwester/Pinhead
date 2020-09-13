@@ -83,7 +83,7 @@ function Canvas(props) {
                         break;
                 }
                 // render highlight circle if applicable
-                if (props.project.markers[i]._id === props.selectedMarker) {
+                if (props.project.markers[i]._id === props.selectedMarker || props.project.markers[i].isManuallySelected) {
                     c.beginPath();
                     c.arc(x, y, 10, 0, 2 * Math.PI);
                     c.stroke();
