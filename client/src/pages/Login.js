@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import API from '../utils/API';
 import { Link, useHistory } from 'react-router-dom';
+import logo from "../pinhead.png"
 
 const Container = styled.div`
     display: flex;
@@ -10,6 +11,7 @@ const Container = styled.div`
     align-items: center;
     width: 100vw;
     height: 100vh;
+    margin-bottom: 10%;
 `
 
 export default function Login(props) {
@@ -33,7 +35,8 @@ export default function Login(props) {
 
     return (
         <Container>
-            <h1>WELCOME TO PINHEAD</h1>
+            <img src={logo} style={{ objectFit: "cover", width: 200, height: 200}} />
+            <h1 style={{ margin: 20 }}>PINHEAD</h1>
             <input type="text" placeholder="email" value={email} onChange={event => setEmail(event.target.value)} />
             <input type="password" placeholder="password" value={password} onChange={event => setPassword(event.target.value)} />
             <button onClick={handleLogin}>Login</button>

@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import ProjectItem from '../components/ProjectItem';
 import styled from 'styled-components';
 import API from '../utils/API';
+import logo from "../pinhead.png"
 
 const Container = styled.div`
     display: flex;
@@ -11,6 +12,7 @@ const Container = styled.div`
     align-items: center;
     width: 100vw;
     height: 100vh;
+    margin-bottom: 20%;
 `
 
 const LogoutButton = styled.button`
@@ -47,9 +49,10 @@ export default function Dashboard(props) {
     return (
         <Container>
             <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
+            <img src={logo} style={{ objectFit: "cover", width: 100, height: 100}} />
             <h1>DASHBOARD</h1>
             <button onClick={handleNewProject}>New Project</button>
-            {projects.length ? projects.map(project => <ProjectItem key={project._id} project={project} />) : <></>}
+            {projects.length ? projects.map(project => <ProjectItem key={project._id} project={project} />) : <p>No projects yet!</p>}
         </Container>
     )
 }

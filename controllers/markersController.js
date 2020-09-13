@@ -53,9 +53,12 @@ module.exports = {
       .catch(err => res.status(422).json(err));
   },
   remove: function(req, res) {
-    console.log(req.body)
     db.Marker
-      .deleteOne({ _id: req.params.id })
+      .findByIdAndDelete(req.params.id)
+      .then(deleted => {
+        console.log(deleted)
+        return db.Project.findByIdAndUpdate(deleted.project, { $pull: { markers: req.params.id } })
+      })
       .then(dbModel => res.json(dbModel))
       .catch(err => res.status(422).json(err));
   }
