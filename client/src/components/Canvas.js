@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import API from '../utils/API';
 import { withResizeDetector } from 'react-resize-detector';
@@ -11,9 +11,6 @@ const Container = styled.div`
 
 function Canvas(props) {
 
-    console.log(props)
-
-    // const isFirstRender = useRef(true)
     const [theImageRatio, setTheImageRatio] = useState(0)
 
     useEffect(() => {
