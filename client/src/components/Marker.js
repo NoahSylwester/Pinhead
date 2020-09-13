@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import API from '../utils/API';
 import styled from 'styled-components';
+import DataRow from './DataRow'
 
 const ListItem = styled.li`
     width: 100%;
@@ -14,6 +15,7 @@ export default function Marker(props) {
     const [isDeletePressed, setIsDeletePressed] = useState(false)
     const [color, setColor] = useState(props.marker.color)
     const [shape, setShape] = useState(props.marker.shape)
+    const [newDataKey, setNewDataKey] = useState("")
 
     const handleContentUpdate = event => {
         API.updateMarker({ ...props.marker, content: event.target.textContent })
@@ -32,6 +34,52 @@ export default function Marker(props) {
     const handleShapeUpdate = event => {
         setShape(event.target.value)
         API.updateMarker({ ...props.marker, shape: event.target.value })
+        .then(res => {
+            console.log(res.data)
+            props.setUpdate(Math.random())
+        })
+    }
+
+    const handleAddField = event => {
+        if (!newDataKey) {
+            return;
+        }
+        API.updateMarker({ ...props.marker, data_keys: [...props.marker.data_keys, newDataKey], data_values: [...props.marker.data_values, ""] })
+        .then(res => {
+            console.log(res.data)
+            props.setUpdate(Math.random())
+        })
+    }
+
+    const handleDataKeyChange = (event, index) => {
+        const { textContent } = event.target;
+        const data_keys = props.marker.data_keys;
+        data_keys[index] = textContent;
+        API.updateMarker({ ...props.marker, data_keys })
+        .then(res => {
+            console.log(res.data)
+            props.setUpdate(Math.random())
+        })
+    }
+
+    const handleDataValueChange = (event, index) => {
+        const { value } = event.target;
+        const data_values = props.marker.data_values;
+        data_values[index] = value;
+        console.log("DATA ", data_values, value, index)
+        API.updateMarker({ ...props.marker, data_values })
+        .then(res => {
+            console.log(res.data)
+            props.setUpdate(Math.random())
+        })
+    }
+
+    const handleDeleteRow = index => {
+        const data_keys = props.marker.data_keys;
+        const data_values = props.marker.data_values;
+        data_keys.splice(index, 1);
+        data_values.splice(index, 1);
+        API.updateMarker({ ...props.marker, data_keys, data_values })
         .then(res => {
             console.log(res.data)
             props.setUpdate(Math.random())
@@ -57,6 +105,26 @@ export default function Marker(props) {
     return (
         <ListItem onMouseEnter={handleOnMouseEnter} onMouseLeave={handleOnMouseLeave}>
             <p onBlur={handleContentUpdate} contentEditable={true}>{props.marker.content}</p>
+            <div data>
+                {props.marker.data_keys.map((data_key, i) => {
+                    return (
+                    <DataRow 
+                        key={props.marker._id + data_key}
+                        data_key={data_key}
+                        index={i}
+                        handleDataKeyChange={handleDataKeyChange}
+                        handleDataValueChange={handleDataValueChange}
+                        handleDeleteRow={handleDeleteRow}
+                        data_value={props.marker.data_values[i]}
+                    />
+                    // <div key={props.marker._id + data_key}>
+                    //     <span>{data_key}: </span><span contentEditable={true} index={i} onBlur={handleDataValueChange}>{props.marker.data_values[i]}</span><button>X</button>
+                    // </div>
+                    )
+                })}
+                <input type="text" placeholder={"Enter new field name"} value={newDataKey} onChange={event => setNewDataKey(event.target.value)} />
+                <button onClick={handleAddField}>Add field</button>
+            </div>
             <input type="color" value={color} onChange={handleColorUpdate} />
             <select value={shape} onChange={handleShapeUpdate}>
                 <option value="circle">circle</option>

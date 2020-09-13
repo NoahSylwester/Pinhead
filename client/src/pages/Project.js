@@ -23,6 +23,7 @@ const BackButton = styled(Link)`
 const DataSection = styled.div`
     width: 30%;
     height: 100%;
+    overflow: scroll;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;

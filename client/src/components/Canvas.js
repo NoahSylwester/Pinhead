@@ -43,11 +43,14 @@ function Canvas(props) {
             c.strokeStyle = props.selectorColor;
             // render marker dots
             for (let i = 0; i < props.project.markers.length; i++) {
+                // choose color
                 c.fillStyle = props.project.markers[i].color;
+                // determine center coordinates
                 let x;
                 let y;
                 x = props.project.markers[i].x * imageRatio * (!isWidthier ? canvas.height / imageRatio : canvas.width);
                 y = props.project.markers[i].y * imageRatio * (isWidthier ? canvas.width / imageRatio : canvas.height);
+                // determine and draw shape
                 switch (props.project.markers[i].shape) {
                     case "circle":
                         c.beginPath();
@@ -80,7 +83,7 @@ function Canvas(props) {
                         c.fill();
                         break;
                 }
-                // render highlight circle
+                // render highlight circle if applicable
                 if (props.project.markers[i]._id === props.selectedMarker) {
                     c.beginPath();
                     c.arc(x, y, 10, 0, 2 * Math.PI);
