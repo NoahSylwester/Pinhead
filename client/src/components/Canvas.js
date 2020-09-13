@@ -46,7 +46,7 @@ function Canvas(props) {
                 c.fillStyle = props.project.markers[i].color;
                 let x;
                 let y;
-                x = props.project.markers[i].x * imageRatio * (!isWidthier ? canvas.width * imageRatio : canvas.width);
+                x = props.project.markers[i].x * imageRatio * (!isWidthier ? canvas.height / imageRatio : canvas.width);
                 y = props.project.markers[i].y * imageRatio * (isWidthier ? canvas.width / imageRatio : canvas.height);
                 c.beginPath();
                 c.arc(x, y, 3, 0, 2 * Math.PI);
@@ -67,7 +67,7 @@ function Canvas(props) {
         if (theImageRatio >= 1) {
             isWidthier = true
         }
-        let x = event.nativeEvent.offsetX / (!isWidthier ? canvas.width * theImageRatio : canvas.width) / theImageRatio;
+        let x = event.nativeEvent.offsetX / (!isWidthier ? canvas.height / theImageRatio : canvas.width) / theImageRatio;
         let y =  event.nativeEvent.offsetY / (isWidthier ? canvas.width / theImageRatio : canvas.height) / theImageRatio;
         API.createMarker(props.project._id, x, y)
         .then(marker => {
