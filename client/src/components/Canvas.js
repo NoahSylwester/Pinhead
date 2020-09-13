@@ -101,7 +101,7 @@ function Canvas(props) {
         }
         let x = event.nativeEvent.offsetX / (!isWidthier ? canvas.height / theImageRatio : canvas.width) / theImageRatio;
         let y =  event.nativeEvent.offsetY / (isWidthier ? canvas.width / theImageRatio : canvas.height) / theImageRatio;
-        API.createMarker(props.project._id, x, y)
+        API.createMarker(props.project._id, x, y, props.presetDataKeys, props.presetDataValues)
         .then(marker => {
             console.log("MARKER  ", marker)
             props.setUpdate(Math.random())

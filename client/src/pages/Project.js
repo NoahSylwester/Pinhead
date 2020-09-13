@@ -4,6 +4,7 @@ import API from '../utils/API';
 import { useParams, Link, useHistory } from 'react-router-dom';
 import Marker from '../components/Marker';
 import Canvas from '../components/Canvas';
+import PresetDataRow from '../components/PresetDataRow';
 
 const Page = styled.div`
     display: flex;
@@ -44,6 +45,7 @@ export default function Project(props) {
 
     const [deletePressed, setDeletePressed] = useState(false)
     const [submitImagePressed, setSubmitImagePressed] = useState(false)
+    const [definePresetsPressed, setDefinePresetsPressed] = useState(false)
     const [imageStage, setImageStage] = useState({ data: "", config: "" })
     const [project, setProject] = useState({
         _id: "",
@@ -55,7 +57,9 @@ export default function Project(props) {
       });
     const [update, setUpdate] = useState(0)
     const [selectedMarker, setSelectedMarker] = useState("")
-    const [selectorColor, setSelectorColor] = useState("red")
+    const [selectorColor, setSelectorColor] = useState("#FF2D00")
+    const [presetDataKeys, setPresetDataKeys] = useState([])
+    const [presetDataValues, setPresetDataValues] = useState([])
 
     useEffect(() => {
         API.queryProject(id)
@@ -69,7 +73,6 @@ export default function Project(props) {
             renderNumber.current++;
             return;
         }
-        console.log(project)
         API.queryProject(project._id)
         .then(res => {
             console.log("PROJECT  ", res)
@@ -121,6 +124,37 @@ export default function Project(props) {
         })
     }
 
+    const handleAddPresetRow = () => {
+        setPresetDataKeys([...presetDataKeys, ""])
+        setPresetDataValues([...presetDataValues, ""])
+    }
+
+    const handleUpdatePresetRowKey = (key, i) => {
+        const presetKeys = presetDataKeys;
+        presetKeys[i] = key
+        setPresetDataKeys([...presetKeys])
+    }
+
+    const handleUpdatePresetRowValue = (value, i) => {
+        const presetValues = presetDataValues;
+        presetValues[i] = value;
+        setPresetDataValues([...presetValues])
+    }
+
+    const handleDeletePresetRow = index => {
+        const presetKeys = presetDataKeys;
+        const presetValues = presetDataValues;
+        presetKeys.splice(index, 1)
+        presetValues.splice(index, 1)
+        setPresetDataKeys([...presetDataKeys])
+        setPresetDataValues([...presetDataValues])
+    }
+
+    const handleClearPresetRows = () => {
+        setPresetDataKeys([])
+        setPresetDataValues([])
+    }
+
     return (
         <Page>
             <BackButton to={"/dashboard"}>Back</BackButton>
@@ -146,10 +180,35 @@ export default function Project(props) {
                 </div>
                 :
                 <button onClick={() => setSubmitImagePressed(true)}>Update image</button>}
-                <div>
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: 20 }}>
                     <p>Selector color</p>
                     <input type="color" value={selectorColor} onChange={event => setSelectorColor(event.target.value)}/>
                 </div>
+                {definePresetsPressed ?
+                <div>
+                    <div>
+                        <input style={{width: "40%"}} value="Field names" disabled />
+                        <input style={{width: "40%"}} value="Default values" disabled />
+                    </div>
+                    {presetDataKeys.map((data_key, i) => {
+                        return (
+                        <PresetDataRow
+                            data_key={data_key}
+                            data_value={presetDataValues[i]}
+                            index={i}
+                            pass={{
+                                handleDeletePresetRow,
+                                handleUpdatePresetRowKey,
+                                handleUpdatePresetRowValue
+                            }}
+                        />)
+                    })}
+                    <button onClick={handleAddPresetRow}>Add another row</button>
+                    <button onClick={handleClearPresetRows}>Clear</button>
+                    <button onClick={() => setDefinePresetsPressed(false)}>Hide</button>
+                </div>
+                    :
+                <button onClick={() => setDefinePresetsPressed(true)}>Set marker presets</button>}
                 <p>Click on image to add a marker!</p>
                 <ol style={{ width: "70%", padding: 0 }}>
                 {project.markers.length ? 
@@ -165,7 +224,10 @@ export default function Project(props) {
                     markers={project.markers} project={project} 
                     setUpdate={setUpdate} 
                     selectedMarker={selectedMarker} 
-                    selectorColor={selectorColor}>    
+                    selectorColor={selectorColor}
+                    presetDataKeys={presetDataKeys}
+                    presetDataValues={presetDataValues}
+                >
                 </Canvas> : <></>}
                 {/* <img src={`/api/projects/image/${project._id}`} /> */}
             </ImageSection>

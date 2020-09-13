@@ -7,9 +7,9 @@ export default function DataRow(props) {
 
     return (
         <div>
-            <span contentEditable={true} onBlur={event => props.handleDataKeyChange(event, props.index)}>{key}</span><span>: </span>
-            <input value={value} onChange={event => setValue(event.target.value)} onBlur={event => props.handleDataValueChange(event, props.index)} />
-            <button onClick={() => props.handleDeleteRow(props.index)}>X</button>
+            <span style={{ display: "inline-block", width: "40%" }} contentEditable={true} onBlur={event => props.handleDataKeyChange(event, props.index)}>{key}</span><span>: </span>
+            <input style={{ width: "40%" }} value={value} onChange={event => setValue(event.target.value)} onBlur={event => props.handleDataValueChange(event, props.index)} />
+            <button style={{ width: "10%" }} onClick={() => props.handleDeleteRow(props.index)}>X</button>
         </div>
     )
 }

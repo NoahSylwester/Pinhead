@@ -43,9 +43,9 @@ export default {
             headers: {'x-access-token': token},
         })
     },
-    createMarker: (projectId, x, y) => {
+    createMarker: (projectId, x, y, data_keys = [], data_values = []) => {
         const token = localStorage.getItem("token")
-        return axios.post("/api/markers", { project: projectId, x, y, token })
+        return axios.post("/api/markers", { project: projectId, x, y, data_keys, data_values, token })
     },
     updateMarker: marker => {
         const token = localStorage.getItem("token")
