@@ -63,6 +63,7 @@ export default function Project(props) {
       });
     const [update, setUpdate] = useState(0)
     const [selectedMarker, setSelectedMarker] = useState("")
+    const [manuallySelectedMarkers, setManuallySelectedMarkers] = useState([])
     const [selectorColor, setSelectorColor] = useState("#FF2D00")
     const [presetDataKeys, setPresetDataKeys] = useState([])
     const [presetDataValues, setPresetDataValues] = useState([])
@@ -161,10 +162,20 @@ export default function Project(props) {
         setPresetDataValues([])
     }
 
-    const handleManualSelection = (index, isManuallySelected) => {
-        const markers = project.markers;
-        markers[index].isManuallySelected = isManuallySelected;
-        setProject({ ...project, markers })
+    const handleManualSelection = (id, isManuallySelected) => {
+        let newArray = manuallySelectedMarkers.slice();
+        switch (isManuallySelected) {
+            case true:
+                newArray.push(id)
+                setManuallySelectedMarkers(newArray);
+                return;
+            case false:
+                newArray.splice(newArray.indexOf(id), 1)
+                setManuallySelectedMarkers(newArray);
+                return;
+            default:
+                return;
+        }
     }
 
     return (
@@ -198,12 +209,12 @@ export default function Project(props) {
                 </div>
 
                 {definePresetsPressed ?
-                <div>
+                <div style={{ backgroundColor: "lightgray", padding: 5, display: "flex", justifyContent: "center", flexDirection: "column" }}>
                     <div>
                         <input style={{width: "40%"}} value="Field names" disabled />
                         <input style={{width: "40%"}} value="Default values" disabled />
                     </div>
-                    {presetDataKeys.map((data_key, i) => {
+                    {presetDataKeys.length ? presetDataKeys.map((data_key, i) => {
                         return (
                         <PresetDataRow
                             data_key={data_key}
@@ -215,7 +226,7 @@ export default function Project(props) {
                                 handleUpdatePresetRowValue
                             }}
                         />)
-                    })}
+                    }) : <p style={{textAlign: "center", margin: 0}}>No presets!</p>}
                     <button onClick={handleAddPresetRow}>Add another row</button>
                     <button onClick={handleClearPresetRows}>Clear</button>
                     <button onClick={() => setDefinePresetsPressed(false)}>Hide</button>
@@ -259,6 +270,7 @@ export default function Project(props) {
                     selectorColor={selectorColor}
                     presetDataKeys={presetDataKeys}
                     presetDataValues={presetDataValues}
+                    manuallySelectedMarkers={manuallySelectedMarkers}
                 >
                 </Canvas> : <></>}
                 {/* <img src={`/api/projects/image/${project._id}`} /> */}

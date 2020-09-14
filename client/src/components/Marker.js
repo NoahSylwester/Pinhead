@@ -113,7 +113,7 @@ export default function Marker(props) {
     }
 
     useEffect(() => {
-        props.handleManualSelection(props.index, isManuallySelected)
+        props.handleManualSelection(props.marker._id, isManuallySelected)
     }, [isManuallySelected])
 
     return (
