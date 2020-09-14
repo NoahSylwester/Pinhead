@@ -37,6 +37,11 @@ const ImageSection = styled.div`
     padding: 10px;
 `
 
+const OperationsPanel = styled.div`
+    background-color: lightgray;
+    padding: 5px;
+`
+
 export default function Project(props) {
 
     const { id } = useParams()
@@ -46,6 +51,7 @@ export default function Project(props) {
     const [deletePressed, setDeletePressed] = useState(false)
     const [submitImagePressed, setSubmitImagePressed] = useState(false)
     const [definePresetsPressed, setDefinePresetsPressed] = useState(false)
+    const [showOperationsPanel, setShowOperationsPanel] = useState(false)
     const [imageStage, setImageStage] = useState({ data: "", config: "" })
     const [project, setProject] = useState({
         _id: "",
@@ -190,6 +196,7 @@ export default function Project(props) {
                     <p>Selector color</p>
                     <input type="color" value={selectorColor} onChange={event => setSelectorColor(event.target.value)}/>
                 </div>
+
                 {definePresetsPressed ?
                 <div>
                     <div>
@@ -215,6 +222,16 @@ export default function Project(props) {
                 </div>
                     :
                 <button onClick={() => setDefinePresetsPressed(true)}>Set marker presets</button>}
+
+                {showOperationsPanel ? 
+                <OperationsPanel>
+                    <p>Select all markers with COL_NAME: VALUE</p>
+                    <p>Replace all values of COL_NAME1 with VALUE1 if this.COL_NAME2 is VALUE2</p>
+                    <p>Display all values of COL_NAME if COL_NAME is VALUE</p>
+                    <button onClick={() => setShowOperationsPanel(false)}>Hide</button>
+                </OperationsPanel> 
+                    : 
+                <button onClick={() => setShowOperationsPanel(true)}>Show operations panel</button>}
                 <p>Click on image to add a marker!</p>
                 <ol style={{ width: "70%", padding: 0 }}>
                 {project.markers.length ? 

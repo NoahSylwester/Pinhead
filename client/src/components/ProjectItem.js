@@ -9,6 +9,9 @@ const Item = styled(Link)`
     width: 200px;
     text-decoration: none;
     color: black;
+    :hover {
+        border: 1px solid gray;
+    }
 `
 
 const Column = styled.div`

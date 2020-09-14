@@ -8,6 +8,6 @@ TODO
     highlight all matching markers
     display values of markers
     change values of all matching markers
-    static manual highlighting
+    -X- static manual highlighting
     UI polishing
     export as excel spreadsheet?
