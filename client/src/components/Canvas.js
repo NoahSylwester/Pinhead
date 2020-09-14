@@ -11,6 +11,7 @@ const Container = styled.div`
 function Canvas(props) {
 
     const [theImageRatio, setTheImageRatio] = useState(0)
+    const [imageState, setImageState] = useState("")
 
     useEffect(() => {
         let canvas = document.querySelector("canvas");
@@ -24,7 +25,9 @@ function Canvas(props) {
         c.clearRect(0, 0, canvas.width, canvas.height)
         // load image
         var image = new Image();
-        image.src = props.imagePath
+        image.src = props.imagePath;
+        setImageState(image);
+        console.log(image, imageState)
         image.onload = function() {
             // logic to fit image into container
             imageRatio = image.width / image.height
@@ -40,6 +43,7 @@ function Canvas(props) {
                 c.drawImage(image, 0, 0, (canvas.height/image.height) * image.width, canvas.height);
             }
             c.strokeStyle = props.selectorColor;
+            c.lineWidth = 2;
             // render marker dots
             for (let i = 0; i < props.project.markers.length; i++) {
                 // choose color
@@ -85,7 +89,6 @@ function Canvas(props) {
                 // render highlight circle if applicable
                 if (props.project.markers[i]._id === props.selectedMarker || props.project.markers[i].isManuallySelected) {
                     c.beginPath();
-                    c.lineWidth = 2;
                     c.arc(x, y, 12, 0, 2 * Math.PI);
                     c.stroke();
                 }

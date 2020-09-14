@@ -183,7 +183,7 @@ export default function Project(props) {
                 {submitImagePressed ? 
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <div style={{ textAlign: "center" }}>
-                        <input type="file" onChange={handleImageUpload}/>
+                        <input type="file" accept="image/png, image/jpeg" onChange={handleImageUpload}/>
                     </div>
                     <div style={{ textAlign: "center" }}>
                         <button onClick={handleImageUpdate}>Submit</button>
