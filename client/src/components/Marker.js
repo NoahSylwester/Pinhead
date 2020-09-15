@@ -116,7 +116,7 @@ export default function Marker(props) {
     return (
         <ListItem onMouseEnter={handleOnMouseEnter} onMouseLeave={handleOnMouseLeave}>
             <ManualSelectionButton onClick={() => setIsManuallySelected(!isManuallySelected)} bool={isManuallySelected}>{isManuallySelected ? "Unselect" : "Select"}</ManualSelectionButton>
-            <p onBlur={handleContentUpdate} contentEditable={true}>{props.marker.content}</p>
+            <p style={{ fontSize: "1.1rem", color: "rgb(100,100,100)" }}  onBlur={handleContentUpdate} contentEditable={true}>{props.marker.content}</p>
             <div data>
                 {props.marker.data_keys.map((data_key, i) => {
                     return (

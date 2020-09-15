@@ -329,13 +329,12 @@ export default function Project(props) {
                 {definePresetsPressed ?
                 <PresetsPanel>
                     <h3 style={{ textAlign: "center" }}>PRESETS</h3>
+                    <div>
+                        <input style={{width: "40%"}} value="Field names" disabled />
+                        <input style={{width: "40%"}} value="Default values" disabled />
+                    </div>
                     {presetDataKeys.length ? presetDataKeys.map((data_key, i) => {
                         return (
-                        <>
-                        <div>
-                            <input style={{width: "40%"}} value="Field names" disabled />
-                            <input style={{width: "40%"}} value="Default values" disabled />
-                        </div>
                         <PresetDataRow
                             data_key={data_key}
                             data_value={presetDataValues[i]}
@@ -345,8 +344,7 @@ export default function Project(props) {
                                 handleUpdatePresetRowKey,
                                 handleUpdatePresetRowValue
                             }}
-                        />
-                        </>)
+                        />)
                     }) : <p style={{textAlign: "center", margin: 5}}>No presets!</p>}
                     <button onClick={handleAddPresetRow}>Add another row</button>
                     <button onClick={handleClearPresetRows}>Clear</button>
