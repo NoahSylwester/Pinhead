@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import API from '../utils/API';
 import { Link, useHistory } from 'react-router-dom';
-import logo from "../pinhead.png"
+import logo from "../pinhead.png";
+import SVGLoadingIcon from '../components/SVGLoadingIcon';
 
 const Container = styled.div`
     display: flex;
@@ -21,11 +22,14 @@ export default function Login(props) {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [errorMessage, setErrorMessage] = useState("")
+    const [loading, setLoading] = useState(false)
 
     const handleLogin = event => {
         event.preventDefault()
+        setLoading(true)
         API.loginUser(email, password)
         .then(res => {
+            setLoading(false)
             localStorage.setItem("token", res.data.token)
             localStorage.setItem("userId", res.data.userId)
             history.push("/dashboard")
@@ -35,11 +39,16 @@ export default function Login(props) {
 
     return (
         <Container>
+            {loading ?
+            <SVGLoadingIcon />
+            :
+            <></>}
+
             <img src={logo} style={{ objectFit: "cover", width: 200, height: 200}} />
             <h1 style={{ margin: 20 }}>PINHEAD</h1>
             <input type="text" placeholder="email" value={email} onChange={event => setEmail(event.target.value)} />
             <input type="password" placeholder="password" value={password} onChange={event => setPassword(event.target.value)} />
-            <button onClick={handleLogin}>Login</button>
+            <button onClick={handleLogin} disable={loading}>Login</button>
             <Link to="/signup">Not a user?</Link>
             {errorMessage ? <h3>{errorMessage}</h3> : <></>}
         </Container>

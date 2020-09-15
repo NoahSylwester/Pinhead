@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import API from '../utils/API';
 import { Link, useHistory } from 'react-router-dom';
+import SVGLoadingIcon from '../components/SVGLoadingIcon';
 
 const Container = styled.div`
     display: flex;
@@ -19,12 +20,14 @@ export default function Signup(props) {
     const [email, setEmail] = useState("")
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
+    const [loading, setLoading] = useState(false)
 
     const handleSignup = event => {
         event.preventDefault()
+        setLoading(true)
         API.registerUser(username, password, email)
         .then(res => {
-            console.log(res)
+            setLoading(false)
             alert("User successfully created")
             history.push("/")
         })
@@ -33,6 +36,11 @@ export default function Signup(props) {
 
     return (
         <Container>
+            {loading ?
+            <SVGLoadingIcon />
+            :
+            <></>}
+
             <h1>SIGNUP</h1>
             <input type="text" placeholder="email" value={email} onChange={event => setEmail(event.target.value)} />
             <input type="text" placeholder="username" value={username} onChange={event => setUsername(event.target.value)} />

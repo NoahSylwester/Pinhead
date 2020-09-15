@@ -13,6 +13,9 @@ const Page = styled.div`
     align-items: center;
     width: 100vw;
     height: 100vh;
+    .show-button {
+        width: 90%;
+    }
 `
 
 const BackButton = styled(Link)`
@@ -44,11 +47,25 @@ const PresetsPanel = styled.div`
     display: flex;
     justify-content: center;
     flex-direction: column;
+    margin: 5px 0;
+    button {
+        width: 80%;
+        margin: auto;
+    }
 `
 
 const OperationsPanel = styled.div`
     background-color: lightgray;
     padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 5px 0;
+    button {
+        width: 80%;
+        margin: auto;
+    }
 `
 
 const FilterSortPanel = styled.div`
@@ -58,6 +75,11 @@ const FilterSortPanel = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin: 5px 0;
+    button {
+        width: 80%;
+        margin: auto;
+    }
 `
 
 const Settings = styled.div`
@@ -68,6 +90,11 @@ const Settings = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin: 5px 0;
+    button {
+        width: 80%;
+        margin: auto;
+    }
 `
 
 export default function Project(props) {
@@ -269,35 +296,35 @@ export default function Project(props) {
                 
                 {showSettings ?
                 <Settings>
-                <h3 style={{ textAlign: "center" }}>SETTINGS</h3>
-                {deletePressed ? 
-                <div style={{ display: "flex" }}>
-                    <button onClick={handleDelete}>Yes, delete</button>
-                    <button onClick={() => setDeletePressed(false)}>Cancel</button>
-                </div>
-                :
-                <button onClick={() => setDeletePressed(true)}>Delete</button>}
+                    <h3 style={{ textAlign: "center" }}>SETTINGS</h3>
+                    {deletePressed ? 
+                    <div style={{ display: "flex" }}>
+                        <button onClick={handleDelete}>Yes, delete</button>
+                        <button onClick={() => setDeletePressed(false)}>Cancel</button>
+                    </div>
+                    :
+                    <button onClick={() => setDeletePressed(true)}>Delete</button>}
 
-                {submitImagePressed ? 
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                    <div style={{ textAlign: "center" }}>
-                        <input type="file" accept="image/png, image/jpeg" onChange={handleImageUpload}/>
+                    {submitImagePressed ? 
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                        <div style={{ textAlign: "center" }}>
+                            <input type="file" accept="image/png, image/jpeg" onChange={handleImageUpload}/>
+                        </div>
+                        <div style={{ textAlign: "center" }}>
+                            <button onClick={handleImageUpdate}>Submit</button>
+                            <button onClick={() => setSubmitImagePressed(false)}>Cancel</button>
+                        </div>
                     </div>
-                    <div style={{ textAlign: "center" }}>
-                        <button onClick={handleImageUpdate}>Submit</button>
-                        <button onClick={() => setSubmitImagePressed(false)}>Cancel</button>
+                    :
+                    <button onClick={() => setSubmitImagePressed(true)}>Update image</button>}
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: 0 }}>
+                        <p style={{margin: 5}}>Selector color</p>
+                        <input type="color" value={selectorColor} onChange={event => setSelectorColor(event.target.value)}/>
                     </div>
-                </div>
-                :
-                <button onClick={() => setSubmitImagePressed(true)}>Update image</button>}
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: 20 }}>
-                    <p>Selector color</p>
-                    <input type="color" value={selectorColor} onChange={event => setSelectorColor(event.target.value)}/>
-                </div>
-                <button onClick={() => setShowSettings(false)}>Hide</button>
+                    <button onClick={() => setShowSettings(false)}>Hide</button>
                 </Settings>
                 :
-                <button onClick={() => setShowSettings(true)}>Settings</button>}
+                <button className={"show-button"} onClick={() => setShowSettings(true)}>Settings</button>}
 
                 {definePresetsPressed ?
                 <PresetsPanel>
@@ -326,7 +353,7 @@ export default function Project(props) {
                     <button onClick={() => setDefinePresetsPressed(false)}>Hide</button>
                 </PresetsPanel>
                     :
-                <button onClick={() => setDefinePresetsPressed(true)}>Set marker presets</button>}
+                <button className={"show-button"} onClick={() => setDefinePresetsPressed(true)}>Set marker presets</button>}
 
                 {showOperationsPanel ? 
                 <OperationsPanel>
@@ -337,7 +364,7 @@ export default function Project(props) {
                     <button onClick={() => setShowOperationsPanel(false)}>Hide</button>
                 </OperationsPanel> 
                     : 
-                <button onClick={() => setShowOperationsPanel(true)}>Show operations panel</button>}
+                <button className={"show-button"} onClick={() => setShowOperationsPanel(true)}>Show operations panel</button>}
                 
                 {showFilterSortPanel ? (
                 <FilterSortPanel>
@@ -382,12 +409,12 @@ export default function Project(props) {
                 </FilterSortPanel>
                 )
                 :
-                <button onClick={() => setShowFilterSortPanel(true)}>Show filter/sort options</button>
+                <button className={"show-button"} onClick={() => setShowFilterSortPanel(true)}>Show filter/sort options</button>
                 }
 
                 <div style={{ width: "90%" }}>
-
-                {sortedMarkers.length ? 
+                <h3 style={{textAlign: "center"}}>MARKERS</h3>
+                {sortedMarkers.length ?
                 sortedMarkers.map((marker, i) => {
                     return (
                     <Marker 
@@ -398,7 +425,7 @@ export default function Project(props) {
                         handleManualSelection={handleManualSelection}
                     >
                     </Marker>)
-                }) : <p>{project.markers.length ? "No markers found under current parameters." : "No markers yet. Click the image to add a marker!"}</p>}
+                }) : <p>{project.markers.length ? "No markers found under current parameters." : "No markers yet. Upload an image in settings, then click the image to add a marker!"}</p>}
 
                 </div>
             </DataSection>
