@@ -9,7 +9,6 @@ module.exports = {
       .catch(err => res.status(422).json(err));
   },
   searchAll: async function(req, res) {
-    console.log('1',req.body)
     let searchEntity;
     const parseInputs = async function () {
       if (req.body.searchOption === 'name') {

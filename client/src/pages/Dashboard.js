@@ -24,12 +24,17 @@ const LogoutButton = styled.button`
 export default function Dashboard(props) {
 
     const [projects, setProjects] = useState([]);
+    const [username, setUsername] = useState("");
     const history = useHistory();
 
     useEffect(() => {
         API.queryProjects()
         .then(response => {
             setProjects(response.data)
+        })
+        API.checkUser()
+        .then(response => {
+            setUsername(response.data.name)
         })
     }, [])
 
@@ -50,7 +55,7 @@ export default function Dashboard(props) {
         <Container>
             <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
             <img src={logo} style={{ objectFit: "cover", width: 100, height: 100}} />
-            <h1>DASHBOARD</h1>
+            <h1>Welcome, {username}!</h1>
             <button onClick={handleNewProject}>New Project</button>
             {projects.length ? projects.map(project => <ProjectItem key={project._id} project={project} />) : <p>No projects yet!</p>}
         </Container>

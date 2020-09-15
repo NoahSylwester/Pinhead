@@ -139,16 +139,12 @@ export default function Project(props) {
             processedMarkersArray =  processedMarkersArray.filter(item => {
                 switch (config.comparator) {
                     case ">":
-                        console.log(1)
                         return item.data_values[item.data_keys.indexOf(config.filteringCol)] > config.filteringValue;
                     case "<":
-                        console.log(2)
                         return item.data_values[item.data_keys.indexOf(config.filteringCol)] < config.filteringValue;
                     case ">=":
-                            console.log(3)
                         return item.data_values[item.data_keys.indexOf(config.filteringCol)] >= config.filteringValue;
                     case "<=":
-                            console.log(4)
                         return item.data_values[item.data_keys.indexOf(config.filteringCol)] <= config.filteringValue;
                     default:
                         return item.data_values[item.data_keys.indexOf(config.filteringCol)] === config.filteringValue;
@@ -273,6 +269,7 @@ export default function Project(props) {
                 
                 {showSettings ?
                 <Settings>
+                <h3 style={{ textAlign: "center" }}>SETTINGS</h3>
                 {deletePressed ? 
                 <div style={{ display: "flex" }}>
                     <button onClick={handleDelete}>Yes, delete</button>
@@ -304,6 +301,7 @@ export default function Project(props) {
 
                 {definePresetsPressed ?
                 <PresetsPanel>
+                    <h3 style={{ textAlign: "center" }}>PRESETS</h3>
                     {presetDataKeys.length ? presetDataKeys.map((data_key, i) => {
                         return (
                         <>
@@ -332,6 +330,7 @@ export default function Project(props) {
 
                 {showOperationsPanel ? 
                 <OperationsPanel>
+                    <h3 style={{ textAlign: "center" }}>OPERATIONS</h3>
                     <p>Select all markers with COL_NAME: VALUE</p>
                     <p>Replace all values of COL_NAME1 with VALUE1 if this.COL_NAME2 is VALUE2</p>
                     <p>Display all values of COL_NAME if COL_NAME is VALUE</p>
@@ -342,7 +341,7 @@ export default function Project(props) {
                 
                 {showFilterSortPanel ? (
                 <FilterSortPanel>
-
+                    <h3 style={{ textAlign: "center" }}>FILTER/SORT</h3>
                     <p>Filter by</p>
                     <div style={{ display: "flex" }}>
                         <input onChange={event => setSortingConfig({ ...sortingConfig, filteringCol: event.target.value})} value={sortingConfig.filteringCol} style={{width: "50%"}} placeholder="Field name" />

@@ -4,7 +4,13 @@ export default {
     // auth API
     registerUser: (username, password, email) => axios.post("/auth/register", { email, username, password }),
     loginUser: (email, password) => axios.post("/auth/login", { email, password }),
-
+    checkUser: () => {
+        const token = localStorage.getItem("token")
+        const userId = localStorage.getItem("userId")
+        return axios.get(`/api/users/${userId}`, {
+            headers: {'x-access-token': token}
+        })
+    },
     // data API
     queryProjects: () => {
         const token = localStorage.getItem("token")
