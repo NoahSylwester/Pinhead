@@ -3,7 +3,7 @@ import API from '../utils/API';
 import styled from 'styled-components';
 import DataRow from './DataRow'
 
-const ListItem = styled.li`
+const ListItem = styled.div`
     width: 100%;
     border: 1px solid gray;
     margin: 10px;
@@ -29,14 +29,15 @@ export default function Marker(props) {
 
     const handleContentUpdate = event => {
         API.updateMarker({ ...props.marker, content: event.target.textContent })
-        .then(res => console.log(res.data))
+        .then(res => {
+            props.setUpdate(Math.random())
+        })
     }
 
     const handleColorUpdate = event => {
         setColor(event.target.value)
         API.updateMarker({ ...props.marker, color: event.target.value })
         .then(res => {
-            console.log(res.data)
             props.setUpdate(Math.random())
         })
     }
@@ -45,7 +46,6 @@ export default function Marker(props) {
         setShape(event.target.value)
         API.updateMarker({ ...props.marker, shape: event.target.value })
         .then(res => {
-            console.log(res.data)
             props.setUpdate(Math.random())
         })
     }
@@ -56,30 +56,29 @@ export default function Marker(props) {
         }
         API.updateMarker({ ...props.marker, data_keys: [...props.marker.data_keys, newDataKey], data_values: [...props.marker.data_values, ""] })
         .then(res => {
-            console.log(res.data)
             props.setUpdate(Math.random())
         })
     }
 
     const handleDataKeyChange = (event, index) => {
-        const { textContent } = event.target;
+        const { textContent: key } = event.target;
         const data_keys = props.marker.data_keys;
-        data_keys[index] = textContent;
+        data_keys[index] = key;
+        console.log("DATA", index, key, data_keys)
         API.updateMarker({ ...props.marker, data_keys })
         .then(res => {
-            console.log(res.data)
+            console.log(res)
             props.setUpdate(Math.random())
         })
     }
 
-    const handleDataValueChange = (event, index) => {
-        const { value } = event.target;
+    const handleDataValueChange = (value, index) => {
         const data_values = props.marker.data_values;
         data_values[index] = value;
-        console.log("DATA ", data_values, value, index)
+        console.log("VALUES", index, value, data_values)
         API.updateMarker({ ...props.marker, data_values })
         .then(res => {
-            console.log(res.data)
+            console.log(res)
             props.setUpdate(Math.random())
         })
     }
@@ -91,7 +90,6 @@ export default function Marker(props) {
         data_values.splice(index, 1);
         API.updateMarker({ ...props.marker, data_keys, data_values })
         .then(res => {
-            console.log(res.data)
             props.setUpdate(Math.random())
         })
     }
@@ -99,7 +97,6 @@ export default function Marker(props) {
     const handleDelete = event => {
         API.deleteMarker(props.marker._id)
         .then(res => {
-            console.log(res);
             props.setUpdate(Math.random())
         })
     }
@@ -124,9 +121,9 @@ export default function Marker(props) {
                 {props.marker.data_keys.map((data_key, i) => {
                     return (
                     <DataRow 
+                        index={i}
                         key={props.marker._id + data_key}
                         data_key={data_key}
-                        index={i}
                         handleDataKeyChange={handleDataKeyChange}
                         handleDataValueChange={handleDataValueChange}
                         handleDeleteRow={handleDeleteRow}

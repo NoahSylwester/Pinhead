@@ -37,9 +37,27 @@ const ImageSection = styled.div`
     padding: 10px;
 `
 
+const PresetsPanel = styled.div`
+    width: 80%;
+    background-color: lightgray;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+`
+
 const OperationsPanel = styled.div`
     background-color: lightgray;
     padding: 5px;
+`
+
+const FilterSortPanel = styled.div`
+    background-color: lightgray;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 `
 
 export default function Project(props) {
@@ -67,11 +85,23 @@ export default function Project(props) {
     const [selectorColor, setSelectorColor] = useState("#FF2D00")
     const [presetDataKeys, setPresetDataKeys] = useState([])
     const [presetDataValues, setPresetDataValues] = useState([])
+    const [sortedMarkers, setSortedMarkers] = useState([])
+    const [sortingConfig, setSortingConfig] = useState({
+        type: "none",
+        sortingCol: "",
+        filteringCol: "",
+        asc: true,
+        comparator: "==",
+        filteringValue: "",
+        sort: false,
+        filter: false,
+    })
 
     useEffect(() => {
         API.queryProject(id)
         .then(response => {
             setProject(response.data)
+            handleUpdateSortingFilter(response.data, sortingConfig)
         })
     }, [])
 
@@ -82,23 +112,67 @@ export default function Project(props) {
         }
         API.queryProject(project._id)
         .then(res => {
-            console.log("PROJECT  ", res)
             API.queryProject(id)
             .then(response => {
                 setProject(response.data)
+                handleUpdateSortingFilter(response.data, sortingConfig)
             })
         })
     }, [update])
+
+    const handleUpdateSortingFilter = (projectData, config) => {
+        let unprocessedMarkersArray = projectData.markers.slice();
+        let processedMarkersArray = projectData.markers.slice();
+        if (config.filter) {
+            processedMarkersArray =  processedMarkersArray.filter(item => {
+                switch (config.comparator) {
+                    case ">":
+                        console.log(1)
+                        return item.data_values[item.data_keys.indexOf(config.filteringCol)] > config.filteringValue;
+                    case "<":
+                        console.log(2)
+                        return item.data_values[item.data_keys.indexOf(config.filteringCol)] < config.filteringValue;
+                    case ">=":
+                            console.log(3)
+                        return item.data_values[item.data_keys.indexOf(config.filteringCol)] >= config.filteringValue;
+                    case "<=":
+                            console.log(4)
+                        return item.data_values[item.data_keys.indexOf(config.filteringCol)] <= config.filteringValue;
+                    default:
+                        return item.data_values[item.data_keys.indexOf(config.filteringCol)] === config.filteringValue;
+                }
+              })
+        }
+        console.log("KNJBHFV", processedMarkersArray)
+        if (config.sort) {
+            console.log("DOING it,", typeof config.asc)
+            processedMarkersArray = processedMarkersArray.sort((a, b) => {
+                console.log(a.data_values[a.data_keys.indexOf(config.sortingCol)] < b.data_values[b.data_keys.indexOf(config.sortingCol)])
+                console.log(a.data_values[a.data_keys.indexOf(config.sortingCol)] > b.data_values[b.data_keys.indexOf(config.sortingCol)])
+                console.log(a.data_values[a.data_keys.indexOf(config.sortingCol)], b.data_values[b.data_keys.indexOf(config.sortingCol)])
+                if (a.data_values[a.data_keys.indexOf(config.sortingCol)] < b.data_values[b.data_keys.indexOf(config.sortingCol)]) {
+                  return config.asc ? -1 : 1;
+                }
+                if (a.data_values[a.data_keys.indexOf(config.sortingCol)] > b.data_values[b.data_keys.indexOf(config.sortingCol)]) {
+                  return config.asc ? 1 : -1;
+                }
+                // a must be equal to b
+                return 0;
+              })
+        }
+        console.log("JYBCWHJE", processedMarkersArray)
+        setSortedMarkers(processedMarkersArray)
+        if (!config.sort && !config.filter) {
+            setSortedMarkers(unprocessedMarkersArray)
+        }
+    }
+    
 
     const handleTitleUpdate = event => {
         const newTitle = event.target.textContent
         API.updateProject({ ...project, title: newTitle })
         .then(res => {
-            console.log(res)
-            API.queryProject(id)
-            .then(response => {
-                setProject(response.data)
-            })
+            setUpdate(Math.random())
         })
     }
 
@@ -118,7 +192,6 @@ export default function Project(props) {
         let { data, config } = imageStage;
         API.updateProjectImage(project._id, data, config)
         .then(res => {
-            console.log(res.data)
             history.go(0)
         })
     }
@@ -127,7 +200,6 @@ export default function Project(props) {
         API.deleteProject(id)
         .then(res => {
             history.push("/dashboard")
-            console.log(res)
         })
     }
 
@@ -178,6 +250,15 @@ export default function Project(props) {
         }
     }
 
+    useEffect(() => {
+        if (sortingConfig.filteringCol && sortingConfig.filteringValue) {
+            setSortingConfig({ ...sortingConfig, filter: true })
+        }
+        else {
+            setSortingConfig({ ...sortingConfig, filter: false })
+        }
+    }, [sortingConfig.filteringCol, sortingConfig.filteringValue])
+
     return (
         <Page>
             <BackButton to={"/dashboard"}>Back</BackButton>
@@ -209,13 +290,14 @@ export default function Project(props) {
                 </div>
 
                 {definePresetsPressed ?
-                <div style={{ backgroundColor: "lightgray", padding: 5, display: "flex", justifyContent: "center", flexDirection: "column" }}>
-                    <div>
-                        <input style={{width: "40%"}} value="Field names" disabled />
-                        <input style={{width: "40%"}} value="Default values" disabled />
-                    </div>
+                <PresetsPanel>
                     {presetDataKeys.length ? presetDataKeys.map((data_key, i) => {
                         return (
+                        <>
+                        <div>
+                            <input style={{width: "40%"}} value="Field names" disabled />
+                            <input style={{width: "40%"}} value="Default values" disabled />
+                        </div>
                         <PresetDataRow
                             data_key={data_key}
                             data_value={presetDataValues[i]}
@@ -225,12 +307,13 @@ export default function Project(props) {
                                 handleUpdatePresetRowKey,
                                 handleUpdatePresetRowValue
                             }}
-                        />)
-                    }) : <p style={{textAlign: "center", margin: 0}}>No presets!</p>}
+                        />
+                        </>)
+                    }) : <p style={{textAlign: "center", margin: 5}}>No presets!</p>}
                     <button onClick={handleAddPresetRow}>Add another row</button>
                     <button onClick={handleClearPresetRows}>Clear</button>
                     <button onClick={() => setDefinePresetsPressed(false)}>Hide</button>
-                </div>
+                </PresetsPanel>
                     :
                 <button onClick={() => setDefinePresetsPressed(true)}>Set marker presets</button>}
 
@@ -243,23 +326,61 @@ export default function Project(props) {
                 </OperationsPanel> 
                     : 
                 <button onClick={() => setShowOperationsPanel(true)}>Show operations panel</button>}
-                <p>Click on image to add a marker!</p>
-                <ol style={{ width: "70%", padding: 0 }}>
-                {project.markers.length ? 
-                project.markers.map((marker, i) => {
+                <div style={{ width: "70%", padding: 0 }}>
+
+                <FilterSortPanel>
+
+                    <p>Filter by</p>
+                    <div style={{ display: "flex" }}>
+                        <input onChange={event => setSortingConfig({ ...sortingConfig, filteringCol: event.target.value})} value={sortingConfig.filteringCol} style={{width: "50%"}} placeholder="Field name" />
+                        <select onChange={event => setSortingConfig({ ...sortingConfig, comparator: event.target.value })} value={sortingConfig.comparator}>
+                            <option value="==">==</option>
+                            <option value=">">&gt;</option>
+                            <option value="<">&lt;</option>
+                            <option value=">=">&lt;=</option>
+                            <option value="<=">&gt;=</option>
+                        </select>
+                        <input onChange={event => setSortingConfig({ ...sortingConfig, filteringValue: event.target.value})} value={sortingConfig.filteringValue} style={{width: "50%"}} placeholder="Value" />
+                    </div>
+
+                    <p>Sort by</p>
+                    <div style={{ display: "flex" }}>
+                        <input onChange={event => setSortingConfig({ ...sortingConfig, sort: !!event.target.value, sortingCol: event.target.value })} value={sortingConfig.sortingCol} style={{width: "50%"}} placeholder="Field name" />
+                        <select onChange={event => setSortingConfig({ ...sortingConfig, asc: event.target.value === "true" ? true : false})} value={sortingConfig.asc} style={{width: "50%"}}>
+                            <option value={true}>ascending</option>
+                            <option value={false}>descending</option>
+                        </select>
+                    </div>
+
+                    <button onClick={() => handleUpdateSortingFilter(project, sortingConfig)}>Submit</button>
+                    <button onClick={() => setSortingConfig({
+                        type: "none",
+                        sortingCol: "",
+                        filteringCol: "",
+                        asc: true,
+                        comparator: "==",
+                        filteringValue: "",
+                        sort: false,
+                        filter: false,
+                    })}>Reset</button>
+                </FilterSortPanel>
+
+                {sortedMarkers.length ? 
+                sortedMarkers.map((marker, i) => {
                     return (
                     <Marker 
                         key={marker._id} 
                         marker={marker} 
-                        index={i}
                         setUpdate={setUpdate} 
                         setSelectedMarker={setSelectedMarker}
                         handleManualSelection={handleManualSelection}
                     >
                     </Marker>)
-                }) : <></>}
-                </ol>
+                }) : <p>{project.markers.length ? "No markers found under current parameters." : "No markers yet. Click the image to add a marker!"}</p>}
+
+                </div>
             </DataSection>
+
             <ImageSection>
                 {project._id ? 
                 <Canvas 

@@ -45,7 +45,7 @@ module.exports = {
     console.log(req.body)
     db.Marker
       .findOneAndUpdate({ _id: req.params.id }, req.body.marker, { new: true })
-      .populate("author", "_id name")
+      .populate("author", "_id")
       .then(dbModel => {
         console.log(dbModel)
         res.json(dbModel)
