@@ -13,6 +13,17 @@ const Container = styled.div`
     width: 100vw;
     height: 100vh;
     margin-bottom: 10%;
+    input {
+        width: 100%;
+        margin: 1px;
+    }
+`
+
+const LoginForm = styled.form`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 `
 
 export default function Login(props) {
@@ -44,11 +55,13 @@ export default function Login(props) {
             :
             <></>}
 
-            <img src={logo} style={{ objectFit: "cover", width: 200, height: 200}} />
+            <img src={logo} style={{ objectFit: "cover", width: 200}} />
             <h1 style={{ margin: 20 }}>PINHEAD</h1>
-            <input type="text" placeholder="email" value={email} onChange={event => setEmail(event.target.value)} />
-            <input type="password" placeholder="password" value={password} onChange={event => setPassword(event.target.value)} />
-            <button onClick={handleLogin} disable={loading}>Login</button>
+            <LoginForm>
+                <input type="text" placeholder="email" value={email} onChange={event => setEmail(event.target.value)} />
+                <input type="password" placeholder="password" value={password} onChange={event => setPassword(event.target.value)} />
+                <input type="submit" value={"Submit"} onClick={handleLogin} disable={loading} />
+            </LoginForm>
             <Link to="/signup">Not a user?</Link>
             {errorMessage ? <h3>{errorMessage}</h3> : <></>}
         </Container>
