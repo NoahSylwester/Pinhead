@@ -57,7 +57,7 @@ export default function Signup(props) {
                 <input type="text" placeholder="email" value={email} onChange={event => setEmail(event.target.value)} />
                 <input type="text" placeholder="username" value={username} onChange={event => setUsername(event.target.value)} />
                 <input type="password" placeholder="password" value={password} onChange={event => setPassword(event.target.value)} />
-                <input type="submit" value={"Signup"} onClick={handleSignup} disable={loading} />
+                <input type="submit" value="Signup" onClick={handleSignup} disable={loading} />
             </SignupForm>
             <Link to="/">Back to login</Link>
         </Container>

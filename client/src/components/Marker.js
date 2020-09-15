@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import DataRow from './DataRow'
 
 const ListItem = styled.div`
-    width: 100%;
+    width: 90%;
     border: 1px solid gray;
-    margin: 0px;
+    margin: 1px 0;
     padding: 5px;
     position: relative;
 `

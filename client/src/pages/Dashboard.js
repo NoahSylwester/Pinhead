@@ -55,8 +55,8 @@ export default function Dashboard(props) {
         <Container>
             <LogoutButton onClick={handleLogout}>Logout</LogoutButton>
             <img src={logo} style={{ objectFit: "cover", width: 100, }} />
-            <h1>Welcome, {username}!</h1>
-            <button onClick={handleNewProject}>New Project</button>
+            <h1>{username ? `Welcome, ${username}!` : ""}</h1>
+            <button style={{ width: "200px" }} onClick={handleNewProject}>New Project</button>
             {projects.length ? projects.map(project => <ProjectItem key={project._id} project={project} />) : <p>No projects yet!</p>}
         </Container>
     )

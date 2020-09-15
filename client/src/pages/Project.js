@@ -410,7 +410,7 @@ export default function Project(props) {
                 <button className={"show-button"} onClick={() => setShowFilterSortPanel(true)}>Show filter/sort options</button>
                 }
 
-                <div style={{ width: "90%" }}>
+                <div style={{ width: "90%", paddingBottom: "70px" }}>
                 <h3 style={{textAlign: "center"}}>MARKERS</h3>
                 {sortedMarkers.length ?
                 sortedMarkers.map((marker, i) => {
