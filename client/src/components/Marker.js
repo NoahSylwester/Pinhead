@@ -6,7 +6,7 @@ import DataRow from './DataRow'
 const ListItem = styled.div`
     width: 100%;
     border: 1px solid gray;
-    margin: 10px;
+    margin: 0px;
     padding: 5px;
     position: relative;
 `

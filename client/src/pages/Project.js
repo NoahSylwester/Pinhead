@@ -38,7 +38,7 @@ const ImageSection = styled.div`
 `
 
 const PresetsPanel = styled.div`
-    width: 80%;
+    width: 100%;
     background-color: lightgray;
     padding: 5px;
     display: flex;
@@ -60,6 +60,16 @@ const FilterSortPanel = styled.div`
     align-items: center;
 `
 
+const Settings = styled.div`
+    width: 100%;
+    background-color: lightgray;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+`
+
 export default function Project(props) {
 
     const { id } = useParams()
@@ -70,6 +80,8 @@ export default function Project(props) {
     const [submitImagePressed, setSubmitImagePressed] = useState(false)
     const [definePresetsPressed, setDefinePresetsPressed] = useState(false)
     const [showOperationsPanel, setShowOperationsPanel] = useState(false)
+    const [showFilterSortPanel, setShowFilterSortPanel] = useState(false)
+    const [showSettings, setShowSettings] = useState(false)
     const [imageStage, setImageStage] = useState({ data: "", config: "" })
     const [project, setProject] = useState({
         _id: "",
@@ -143,13 +155,8 @@ export default function Project(props) {
                 }
               })
         }
-        console.log("KNJBHFV", processedMarkersArray)
         if (config.sort) {
-            console.log("DOING it,", typeof config.asc)
             processedMarkersArray = processedMarkersArray.sort((a, b) => {
-                console.log(a.data_values[a.data_keys.indexOf(config.sortingCol)] < b.data_values[b.data_keys.indexOf(config.sortingCol)])
-                console.log(a.data_values[a.data_keys.indexOf(config.sortingCol)] > b.data_values[b.data_keys.indexOf(config.sortingCol)])
-                console.log(a.data_values[a.data_keys.indexOf(config.sortingCol)], b.data_values[b.data_keys.indexOf(config.sortingCol)])
                 if (a.data_values[a.data_keys.indexOf(config.sortingCol)] < b.data_values[b.data_keys.indexOf(config.sortingCol)]) {
                   return config.asc ? -1 : 1;
                 }
@@ -160,7 +167,6 @@ export default function Project(props) {
                 return 0;
               })
         }
-        console.log("JYBCWHJE", processedMarkersArray)
         setSortedMarkers(processedMarkersArray)
         if (!config.sort && !config.filter) {
             setSortedMarkers(unprocessedMarkersArray)
@@ -264,6 +270,9 @@ export default function Project(props) {
             <BackButton to={"/dashboard"}>Back</BackButton>
             <DataSection>
                 <h1 contentEditable="true" style={{ textAlign: "center" }} onBlur={handleTitleUpdate}>{project.title}</h1>
+                
+                {showSettings ?
+                <Settings>
                 {deletePressed ? 
                 <div style={{ display: "flex" }}>
                     <button onClick={handleDelete}>Yes, delete</button>
@@ -288,6 +297,10 @@ export default function Project(props) {
                     <p>Selector color</p>
                     <input type="color" value={selectorColor} onChange={event => setSelectorColor(event.target.value)}/>
                 </div>
+                <button onClick={() => setShowSettings(false)}>Hide</button>
+                </Settings>
+                :
+                <button onClick={() => setShowSettings(true)}>Settings</button>}
 
                 {definePresetsPressed ?
                 <PresetsPanel>
@@ -326,8 +339,8 @@ export default function Project(props) {
                 </OperationsPanel> 
                     : 
                 <button onClick={() => setShowOperationsPanel(true)}>Show operations panel</button>}
-                <div style={{ width: "70%", padding: 0 }}>
-
+                
+                {showFilterSortPanel ? (
                 <FilterSortPanel>
 
                     <p>Filter by</p>
@@ -353,17 +366,27 @@ export default function Project(props) {
                     </div>
 
                     <button onClick={() => handleUpdateSortingFilter(project, sortingConfig)}>Submit</button>
-                    <button onClick={() => setSortingConfig({
-                        type: "none",
-                        sortingCol: "",
-                        filteringCol: "",
-                        asc: true,
-                        comparator: "==",
-                        filteringValue: "",
-                        sort: false,
-                        filter: false,
-                    })}>Reset</button>
+                    <button onClick={() => {
+                        let resetConfig = {
+                            type: "none",
+                            sortingCol: "",
+                            filteringCol: "",
+                            asc: true,
+                            comparator: "==",
+                            filteringValue: "",
+                            sort: false,
+                            filter: false,
+                    }
+                    handleUpdateSortingFilter(project, resetConfig)
+                    setSortingConfig(resetConfig)}}>Reset</button>
+                    <button onClick={() => setShowFilterSortPanel(false)}>Hide</button>
                 </FilterSortPanel>
+                )
+                :
+                <button onClick={() => setShowFilterSortPanel(true)}>Show filter/sort options</button>
+                }
+
+                <div style={{ width: "90%" }}>
 
                 {sortedMarkers.length ? 
                 sortedMarkers.map((marker, i) => {
