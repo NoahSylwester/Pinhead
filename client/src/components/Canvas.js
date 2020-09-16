@@ -11,7 +11,8 @@ const Container = styled.div`
 function Canvas(props) {
 
     const [theImageRatio, setTheImageRatio] = useState(0)
-    const [imageState, setImageState] = useState("")
+    const [mouseX, setMouseX] = useState(-100)
+    const [mouseY, setMouseY] = useState(-100)
 
     useEffect(() => {
         let canvas = document.querySelector("canvas");
@@ -26,80 +27,100 @@ function Canvas(props) {
         // load image
         var image = new Image();
         image.src = props.imagePath;
-        setImageState(image);
         // console.log(image, imageState)
-        image.onload = function() {
-            // logic to fit image into container
+        image.onload = () => {
             imageRatio = image.width / image.height
             setTheImageRatio(imageRatio)
-            let isWidthier = false;
-            if (imageRatio >= 1) {
-                isWidthier = true
-            }
-            if (isWidthier) {
-                c.drawImage(image, 0, 0, canvas.width, (canvas.width/image.width) * image.height);
-            }
-            else {
-                c.drawImage(image, 0, 0, (canvas.height/image.height) * image.width, canvas.height);
-            }
-            c.strokeStyle = props.selectorColor;
-            c.lineWidth = 2;
-            c.font = "15px Arial";
-            // render marker dots
-            for (let i = 0; i < props.project.markers.length; i++) {
-                // choose color
-                c.fillStyle = props.project.markers[i].color;
-                // determine center coordinates
-                let x;
-                let y;
-                x = props.project.markers[i].x * imageRatio * (!isWidthier ? canvas.height / imageRatio : canvas.width);
-                y = props.project.markers[i].y * imageRatio * (isWidthier ? canvas.width / imageRatio : canvas.height);
-                // determine and draw shape
-                switch (props.project.markers[i].shape) {
-                    case "circle":
-                        c.beginPath();
-                        c.arc(x, y, 3, 0, 2 * Math.PI);
-                        c.fill();
-                        break;
-                    case "square":
-                        c.fillRect(x - 3, y - 3, 6, 6);
-                        break;
-                    case "triangle":
-                        c.beginPath();
-                        c.moveTo(x, y - 3);
-                        c.lineTo(x - Math.sqrt(13), y + 3);
-                        c.lineTo(x + Math.sqrt(13), y + 3);
-                        c.lineTo(x, y - 3);
-                        c.fill();
-                        break;
-                    case "rhombus":
-                        c.beginPath();
-                        c.moveTo(x, y - 4);
-                        c.lineTo(x - 4, y);
-                        c.lineTo(x, y + 4);
-                        c.lineTo(x + 4, y);
-                        c.lineTo(x, y - 4);
-                        c.fill();
-                        break;
-                    default:
-                        c.beginPath();
-                        c.arc(x, y, 3, 0, 2 * Math.PI);
-                        c.fill();
-                        break;
-                }
-                // render highlight circle if applicable
-                if (props.project.markers[i]._id === props.selectedMarker || props.manuallySelectedMarkers.includes(props.project.markers[i]._id)) {
+            renderCanvas()
+        };
+      }, [props.width, props.height]);
+
+    useEffect(() => {
+        renderCanvas()
+    },[mouseX, mouseY, props.project, props.selectedMarker, props.width, props.height, props.manuallySelectedMarkers, props.displayedMarkers])
+
+    const renderCanvas = () => {
+        let canvas = document.querySelector("canvas");
+        let imageState = document.querySelector("#img-ref");
+        let c = canvas.getContext("2d");
+        // logic to fit image into container
+        let isWidthier = false;
+        if (theImageRatio >= 1) {
+            isWidthier = true
+        }
+        if (isWidthier) {
+            c.drawImage(imageState, 0, 0, canvas.width, (canvas.width/imageState.width) * imageState.height);
+        }
+        else {
+            c.drawImage(imageState, 0, 0, (canvas.height/imageState.height) * imageState.width, canvas.height);
+        }
+        c.strokeStyle = props.selectorColor;
+        c.lineWidth = 2;
+        c.font = "15px Arial";
+        // render marker dots
+        let hoverMatchFound = false;
+        for (let i = 0; i < props.project.markers.length; i++) {
+            // choose color
+            c.fillStyle = props.project.markers[i].color;
+            // determine center coordinates
+            let x;
+            let y;
+            x = props.project.markers[i].x * theImageRatio * (!isWidthier ? canvas.height / theImageRatio : canvas.width);
+            y = props.project.markers[i].y * theImageRatio * (isWidthier ? canvas.width / theImageRatio : canvas.height);
+            // determine and draw shape
+            switch (props.project.markers[i].shape) {
+                case "circle":
                     c.beginPath();
-                    c.arc(x, y, 12, 0, 2 * Math.PI);
-                    c.stroke();
-                }
-                if (props.displayedMarkers.includes(props.project.markers[i]._id)) {
-                    c.fillText(props.project.markers[i].data_values[props.project.markers[i].data_keys.indexOf(props.displayedColumn)], x + 10, y - 10)
-                }
+                    c.arc(x, y, 3, 0, 2 * Math.PI);
+                    c.fill();
+                    break;
+                case "square":
+                    c.fillRect(x - 3, y - 3, 6, 6);
+                    break;
+                case "triangle":
+                    c.beginPath();
+                    c.moveTo(x, y - 3);
+                    c.lineTo(x - Math.sqrt(13), y + 3);
+                    c.lineTo(x + Math.sqrt(13), y + 3);
+                    c.lineTo(x, y - 3);
+                    c.fill();
+                    break;
+                case "rhombus":
+                    c.beginPath();
+                    c.moveTo(x, y - 4);
+                    c.lineTo(x - 4, y);
+                    c.lineTo(x, y + 4);
+                    c.lineTo(x + 4, y);
+                    c.lineTo(x, y - 4);
+                    c.fill();
+                    break;
+                default:
+                    c.beginPath();
+                    c.arc(x, y, 3, 0, 2 * Math.PI);
+                    c.fill();
+                    break;
+            }
+            // render highlight circle if applicable
+            if (props.project.markers[i]._id === props.selectedMarker || props.manuallySelectedMarkers.includes(props.project.markers[i]._id)) {
+                c.beginPath();
+                c.arc(x, y, 12, 0, 2 * Math.PI);
+                c.stroke();
+            }
+            if (props.displayedMarkers.includes(props.project.markers[i]._id)) {
+                c.fillText(props.project.markers[i].data_values[props.project.markers[i].data_keys.indexOf(props.displayedColumn)], x + 10, y - 10)
+            }
+            if (mouseX <= x + 10 && mouseX >= x - 10 && mouseY <= y + 10 && mouseY >= y - 10) {
+                hoverMatchFound = true;
+                c.beginPath();
+                c.arc(x, y, 12, 0, 2 * Math.PI);
+                c.stroke();
+                props.setMouseHoveredMarkerId(props.project.markers[i]._id)
+            }
+            else if (!hoverMatchFound) {
+                props.setMouseHoveredMarkerId("")
             }
         }
-        console.log(props.manuallySelectedMarkers)
-      }, [props.project, props.selectedMarker, props.width, props.height, props.manuallySelectedMarkers, props.displayedMarkers]);
+    }
 
     const handleMouseDown = event => {
         let canvas = document.querySelector("canvas");
@@ -117,10 +138,19 @@ function Canvas(props) {
         })
     }
 
+    const handleMouseMove = event => {
+        // let canvas = document.querySelector("canvas");
+        setMouseX(event.nativeEvent.offsetX)
+        setMouseY(event.nativeEvent.offsetY)
+    }
+
     return (
-        <Container id={"canvas-container"}>
-            <canvas onMouseDown={handleMouseDown}></canvas>
-        </Container>
+        <>
+            <img id="img-ref" style={{display: "none"}} src={props.imagePath} />
+            <Container id={"canvas-container"}>
+                <canvas onMouseDown={handleMouseDown} onMouseMove={handleMouseMove}></canvas>
+            </Container>
+        </>
     )
 }
 

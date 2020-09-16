@@ -140,6 +140,7 @@ export default function Project(props) {
     const [update, setUpdate] = useState(0)
     const [selectedMarker, setSelectedMarker] = useState(0)
     const [manuallySelectedMarkers, setManuallySelectedMarkers] = useState([])
+    const [mouseHoveredMarkerId, setMouseHoveredMarkerId] = useState("")
     const [displayedMarkers, setDisplayedMarkers] = useState([])
     const [displayedColumn, setDisplayedColumn] = useState("")
     const [selectorColor, setSelectorColor] = useState("#FF2D00")
@@ -404,12 +405,12 @@ export default function Project(props) {
                 <Settings>
                     <h3 style={{ textAlign: "center" }}>SETTINGS</h3>
                     {deletePressed ? 
-                    <div style={{ display: "flex" }}>
-                        <button onClick={handleDelete}>Yes, delete</button>
-                        <button onClick={() => setDeletePressed(false)}>Cancel</button>
+                    <div style={{ display: "flex", width: "80%" }}>
+                        <button style={{ width: "50%", backgroundColor: "red", border: "1px white dotted", color: "white", margin: 0}} onClick={handleDelete}>Yes, delete</button>
+                        <button style={{ width: "50%" }} onClick={() => setDeletePressed(false)}>Cancel</button>
                     </div>
                     :
-                    <button onClick={() => setDeletePressed(true)}>Delete</button>}
+                    <button onClick={() => setDeletePressed(true)}>Delete project</button>}
 
                     {submitImagePressed ? 
                     <div style={{ display: "flex", flexDirection: "column" }}>
@@ -423,9 +424,9 @@ export default function Project(props) {
                     </div>
                     :
                     <button onClick={() => setSubmitImagePressed(true)}>Update image</button>}
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: 0 }}>
-                        <p style={{margin: 5}}>Selector color</p>
-                        <input type="color" value={selectorColor} onChange={event => setSelectorColor(event.target.value)}/>
+                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", margin: 0}}>
+                        <p style={{marginRight: 5}}>Selector color</p>
+                        <input style={{ borderRadius: 30, width: 30, height: 30}} type="color" value={selectorColor} onChange={event => setSelectorColor(event.target.value)}/>
                     </div>
                     <button onClick={() => setShowSettings(false)}>Hide Settings</button>
                 </Settings>
@@ -588,6 +589,20 @@ export default function Project(props) {
                 }
 
                 <div style={{ width: "90%", paddingBottom: "70px" }}>
+
+                {mouseHoveredMarkerId ? 
+                <>
+                    <h3 style={{textAlign: "center"}}>HOVERED MARKER</h3>
+                    <Marker
+                        key={project.markers.filter(item => item._id === mouseHoveredMarkerId)[0]._id + "hovered"} 
+                        marker={project.markers.filter(item => item._id === mouseHoveredMarkerId)[0]} 
+                        setUpdate={setUpdate}
+                        setSelectedMarker={setSelectedMarker}
+                        handleManualSelection={handleManualSelection}
+                        isManuallySelectedFromOutside={manuallySelectedMarkers.includes(project.markers.filter(item => item._id === mouseHoveredMarkerId)[0]._id)}
+                    ></Marker>
+                </>
+                : <></>}
                 <h3 style={{textAlign: "center"}}>MARKERS</h3>
                 {sortedMarkers.length ?
                 sortedMarkers.map((marker, i) => {
@@ -620,6 +635,7 @@ export default function Project(props) {
                     manuallySelectedMarkers={manuallySelectedMarkers}
                     displayedColumn={displayedColumn}
                     displayedMarkers={displayedMarkers}
+                    setMouseHoveredMarkerId={setMouseHoveredMarkerId}
                 >
                 </Canvas> : <></>}
                 {/* <img src={`/api/projects/image/${project._id}`} /> */}

@@ -19,6 +19,20 @@ const ManualSelectionButton = styled.button`
     border: none;
 `
 
+const ColorSelectionInput = styled.input`
+    position: absolute;
+    top: 20px;
+    right: 0;
+    border-radius: 30px;
+    width: 20px;
+    height: 20px;
+`
+
+const MarkerOptions = styled.div`
+    display: flex;
+    flex-direction: column;
+`
+
 export default function Marker(props) {
 
     const [isDeletePressed, setIsDeletePressed] = useState(false)
@@ -26,6 +40,7 @@ export default function Marker(props) {
     const [shape, setShape] = useState(props.marker.shape)
     const [newDataKey, setNewDataKey] = useState("")
     const [isManuallySelected, setIsManuallySelected] = useState(false)
+    const [showOptions, setShowOptions] = useState(false)
 
     const handleContentUpdate = event => {
         API.updateMarker({ ...props.marker, content: event.target.textContent })
@@ -51,9 +66,11 @@ export default function Marker(props) {
     }
 
     const handleAddField = event => {
-        if (!newDataKey) {
+        event.preventDefault();
+        if (!newDataKey || props.marker.data_keys.includes(newDataKey)) {
             return;
         }
+        setNewDataKey("")
         API.updateMarker({ ...props.marker, data_keys: [...props.marker.data_keys, newDataKey], data_values: [...props.marker.data_values, ""] })
         .then(res => {
             props.setUpdate(Math.random())
@@ -64,7 +81,6 @@ export default function Marker(props) {
         const { textContent: key } = event.target;
         const data_keys = props.marker.data_keys;
         data_keys[index] = key;
-        console.log("DATA", index, key, data_keys)
         API.updateMarker({ ...props.marker, data_keys })
         .then(res => {
             console.log(res)
@@ -75,22 +91,12 @@ export default function Marker(props) {
     const handleDataValueChange = (value, index) => {
         const data_values = props.marker.data_values;
         data_values[index] = value;
-        console.log("VALUES", index, value, data_values)
         API.updateMarker({ ...props.marker, data_values })
         .then(res => {
             console.log(res)
             props.setUpdate(Math.random())
         })
     }
-
-    // useEffect(() => {
-    //     console.log(props.marker.data_values)
-    //     API.updateMarker({ ...props.marker, data_values: props.marker.data_values })
-    //     .then(res => {
-    //         console.log(res)
-    //         props.setUpdate(Math.random())
-    //     })
-    // }, [props.marker.data_values])
 
     const handleDeleteRow = index => {
         const data_keys = props.marker.data_keys;
@@ -129,6 +135,7 @@ export default function Marker(props) {
     return (
         <ListItem onMouseEnter={handleOnMouseEnter} onMouseLeave={handleOnMouseLeave}>
             <ManualSelectionButton onClick={() => setIsManuallySelected(!isManuallySelected)} bool={isManuallySelected}>{isManuallySelected ? "Unselect" : "Select"}</ManualSelectionButton>
+            <ColorSelectionInput type="color" value={color} onChange={handleColorUpdate} />
             <p style={{ fontSize: "1.1rem", color: "rgb(100,100,100)" }}  onBlur={handleContentUpdate} contentEditable={true}>{props.marker.content}</p>
             <div data>
                 {props.marker.data_keys.map((data_key, i) => {
@@ -142,15 +149,15 @@ export default function Marker(props) {
                         handleDeleteRow={handleDeleteRow}
                         data_value={props.marker.data_values[i]}
                     />
-                    // <div key={props.marker._id + data_key}>
-                    //     <span>{data_key}: </span><span contentEditable={true} index={i} onBlur={handleDataValueChange}>{props.marker.data_values[i]}</span><button>X</button>
-                    // </div>
                     )
                 })}
-                <input type="text" placeholder={"Enter new field name"} value={newDataKey} onChange={event => setNewDataKey(event.target.value)} />
-                <button onClick={handleAddField}>Add field</button>
             </div>
-            <input type="color" value={color} onChange={handleColorUpdate} />
+            {showOptions ?
+            <MarkerOptions>
+            <form style={{ display: "flex"}} onSubmit={handleAddField}>
+                <input style={{width: "60%"}}  type="text" placeholder={"Enter new field name"} value={newDataKey} onChange={event => setNewDataKey(event.target.value)} />
+                <input style={{width: "40%"}} type="submit" value="Add field" />
+            </form>
             <select value={shape} onChange={handleShapeUpdate}>
                 <option value="circle">circle</option>
                 <option value="square">square</option>
@@ -158,12 +165,16 @@ export default function Marker(props) {
                 <option value="triangle">triangle</option>
             </select>
             {isDeletePressed ? 
-            <>
-                <button onClick={handleDelete}>Confirm</button>
-                <button onClick={() => setIsDeletePressed(false)}>Cancel</button>
-            </>
+            <div style={{ display: 'flex'}}>
+                <button style={{ width: "50%", backgroundColor: "red", color: "white", border: "1px white dotted" }} onClick={handleDelete}>Confirm</button>
+                <button style={{ width: "50%" }} onClick={() => setIsDeletePressed(false)}>Cancel</button>
+            </div>
             :
             <button onClick={() => setIsDeletePressed(true)}>Delete</button>}
+
+            <button onClick={() => setShowOptions(false)}>Hide Options</button>
+            </MarkerOptions>
+            : <button style={{ width: "100%"}} onClick={() => setShowOptions(true)}>Options</button>}
         </ListItem>
     )
 }
