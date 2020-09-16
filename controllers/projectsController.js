@@ -50,9 +50,8 @@ module.exports = {
       .findById(req.params.id)
       .populate("author", "_id")
       .populate("markers")
-      // .select("-image")
+      .select("-image")
       .then(dbModel => {
-        console.log(dbModel)
         if (dbModel.image) {
           dbModel.image = true;
         }
@@ -74,6 +73,7 @@ module.exports = {
     db.Project
       .findOneAndUpdate({ _id: req.params.id }, { ...req.body.project })
       .populate("author", "_id")
+      .select("-image")
       .then(dbModel => res.json(dbModel))
       .catch(err => res.status(422).json(err));
   },
