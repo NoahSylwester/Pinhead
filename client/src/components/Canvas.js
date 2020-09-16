@@ -44,6 +44,7 @@ function Canvas(props) {
             }
             c.strokeStyle = props.selectorColor;
             c.lineWidth = 2;
+            c.font = "15px Arial";
             // render marker dots
             for (let i = 0; i < props.project.markers.length; i++) {
                 // choose color
@@ -92,9 +93,13 @@ function Canvas(props) {
                     c.arc(x, y, 12, 0, 2 * Math.PI);
                     c.stroke();
                 }
+                if (props.displayedMarkers.includes(props.project.markers[i]._id)) {
+                    c.fillText(props.project.markers[i].data_values[props.project.markers[i].data_keys.indexOf(props.displayedColumn)], x + 10, y - 10)
+                }
             }
         }
-      }, [props.project, props.selectedMarker, props.width, props.height, props.manuallySelectedMarkers]);
+        console.log(props.manuallySelectedMarkers)
+      }, [props.project, props.selectedMarker, props.width, props.height, props.manuallySelectedMarkers, props.displayedMarkers]);
 
     const handleMouseDown = event => {
         let canvas = document.querySelector("canvas");

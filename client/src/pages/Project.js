@@ -140,6 +140,8 @@ export default function Project(props) {
     const [update, setUpdate] = useState(0)
     const [selectedMarker, setSelectedMarker] = useState(0)
     const [manuallySelectedMarkers, setManuallySelectedMarkers] = useState([])
+    const [displayedMarkers, setDisplayedMarkers] = useState([])
+    const [displayedColumn, setDisplayedColumn] = useState("")
     const [selectorColor, setSelectorColor] = useState("#FF2D00")
     const [presetDataKeys, setPresetDataKeys] = useState([])
     const [presetDataValues, setPresetDataValues] = useState([])
@@ -347,7 +349,6 @@ export default function Project(props) {
 
         const newMarkersArr = project.markers.map((item, i) => {
             let newItem = { ...item }
-            console.log(comparator)
             if (handleSwitchComparatorOperation(comparator, item.data_values[item.data_keys.indexOf(col2 || col1)], val2)) {
                 newItem.data_values[item.data_keys.indexOf(col1)] = val1;
             }
@@ -361,8 +362,27 @@ export default function Project(props) {
         })
     }
 
-    const handleOp3 = () => {
-        
+    const handleOp3 = event => {
+        event.preventDefault()
+        const { col, val, colToDisplay, comparator } = op3Config;
+
+        setDisplayedColumn(colToDisplay);
+
+        let newDisplayedMarkersArray;
+        if (val) {
+            newDisplayedMarkersArray = project.markers.filter(item => {
+                return handleSwitchComparatorOperation(comparator, item.data_values[item.data_keys.indexOf(col || colToDisplay)], val)
+            })
+        }
+        else {
+            newDisplayedMarkersArray =  project.markers.filter(item => {
+                return item.data_keys.includes(col || colToDisplay)
+            })
+        }
+        setDisplayedMarkers(newDisplayedMarkersArray.map(item => item._id))
+            // return { _id: item._id, data: item.data_values[item.data_keys.indexOf(colToDisplay)] }
+            // })
+        // )
     }
 
     useEffect(() => {
@@ -407,7 +427,7 @@ export default function Project(props) {
                         <p style={{margin: 5}}>Selector color</p>
                         <input type="color" value={selectorColor} onChange={event => setSelectorColor(event.target.value)}/>
                     </div>
-                    <button onClick={() => setShowSettings(false)}>Hide</button>
+                    <button onClick={() => setShowSettings(false)}>Hide Settings</button>
                 </Settings>
                 :
                 <button className={"show-button"} onClick={() => setShowSettings(true)}>Settings</button>}
@@ -435,7 +455,7 @@ export default function Project(props) {
                     }) : <p style={{textAlign: "center", marginBottom: 15}}>No presets!</p>}
                     <button onClick={handleAddPresetRow}>Add another row</button>
                     <button onClick={handleClearPresetRows}>Clear</button>
-                    <button onClick={() => setDefinePresetsPressed(false)}>Hide</button>
+                    <button onClick={() => setDefinePresetsPressed(false)}>Hide Presets</button>
                 </PresetsPanel>
                     :
                 <button className={"show-button"} onClick={() => setDefinePresetsPressed(true)}>Set marker presets</button>}
@@ -460,7 +480,10 @@ export default function Project(props) {
                             </div>
                             <i style={{ display: "inline-block", fontSize: "0.2rem" }}>Value defaults to 'anything'</i>
                             <input type="submit" value="Go" />
-                            <button onClick={() => setManuallySelectedMarkers([])}>Clear selections</button>
+                            <button onClick={event => {
+                                event.preventDefault()
+                                setManuallySelectedMarkers([])
+                                }}>Clear selections</button>
                         </form>
                     </Operation>
                     <Operation>
@@ -507,9 +530,13 @@ export default function Project(props) {
                             </div>
                             <i style={{ display: "inline-block", fontSize: "0.2rem" }}>Field 2 defaults to Field 1, Value defaults to 'anything'</i>
                             <input type="submit" value="Go" />
+                            <button onClick={event => {
+                                event.preventDefault()
+                                setDisplayedMarkers([]);
+                                setDisplayedColumn(""); }}>Clear displays</button>
                         </form>
                     </Operation>
-                    <button onClick={() => setShowOperationsPanel(false)}>Hide</button>
+                    <button onClick={() => setShowOperationsPanel(false)}>Hide Operations</button>
                 </OperationsPanel> 
                     : 
                 <button className={"show-button"} onClick={() => setShowOperationsPanel(true)}>Show operations panel</button>}
@@ -553,7 +580,7 @@ export default function Project(props) {
                     }
                     handleUpdateSortingFilter(project, resetConfig)
                     setSortingConfig(resetConfig)}}>Reset</button>
-                    <button onClick={() => setShowFilterSortPanel(false)}>Hide</button>
+                    <button onClick={() => setShowFilterSortPanel(false)}>Hide Filter/Sort</button>
                 </FilterSortPanel>
                 )
                 :
@@ -573,6 +600,7 @@ export default function Project(props) {
                         handleManualSelection={handleManualSelection}
                         isManuallySelectedFromOutside={manuallySelectedMarkers.includes(marker._id)}
                     >
+                        {console.log(manuallySelectedMarkers.length)}
                     </Marker>)
                 }) : <p>{project.markers.length ? "No markers found under current parameters." : "No markers yet. Upload an image in settings, then click the image to add a marker!"}</p>}
 
@@ -590,6 +618,8 @@ export default function Project(props) {
                     presetDataKeys={presetDataKeys}
                     presetDataValues={presetDataValues}
                     manuallySelectedMarkers={manuallySelectedMarkers}
+                    displayedColumn={displayedColumn}
+                    displayedMarkers={displayedMarkers}
                 >
                 </Canvas> : <></>}
                 {/* <img src={`/api/projects/image/${project._id}`} /> */}
