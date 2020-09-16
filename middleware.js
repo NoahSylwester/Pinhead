@@ -12,12 +12,13 @@ const withAuth = function(req, res, next) {
       req.cookies.token;
 
   if (!token) {
-    console.log('token!')
+    res.redirect("/")
     res.status(401).send('Unauthorized: No token provided');
     // res.sendFile(path.join(__dirname, "./authClient/index.html"));
   } else {
     jwt.verify(token, secret, function(err, decoded) {
       if (err) {
+        res.redirect("/")
         console.log(err)
         res.status(401).send('Unauthorized: Invalid token');
         // res.sendFile(path.join(__dirname, "./authClient/index.html"));

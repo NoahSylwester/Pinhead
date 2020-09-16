@@ -84,6 +84,7 @@ export default function Marker(props) {
     }
 
     // useEffect(() => {
+    //     console.log(props.marker.data_values)
     //     API.updateMarker({ ...props.marker, data_values: props.marker.data_values })
     //     .then(res => {
     //         console.log(res)
