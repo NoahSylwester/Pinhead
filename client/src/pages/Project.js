@@ -138,7 +138,7 @@ export default function Project(props) {
         markers: [],
       });
     const [update, setUpdate] = useState(0)
-    const [selectedMarker, setSelectedMarker] = useState("")
+    const [selectedMarker, setSelectedMarker] = useState(0)
     const [manuallySelectedMarkers, setManuallySelectedMarkers] = useState([])
     const [selectorColor, setSelectorColor] = useState("#FF2D00")
     const [presetDataKeys, setPresetDataKeys] = useState([])
@@ -291,7 +291,6 @@ export default function Project(props) {
 
     const handleManualSelection = (id, isManuallySelected) => {
         let newArray = manuallySelectedMarkers.slice();
-        console.log(id, newArray, isManuallySelected)
         switch (isManuallySelected) {
             case true:
                 if (!newArray.includes(id)) {
@@ -348,12 +347,18 @@ export default function Project(props) {
 
         const newMarkersArr = project.markers.map((item, i) => {
             let newItem = { ...item }
+            console.log(comparator)
             if (handleSwitchComparatorOperation(comparator, item.data_values[item.data_keys.indexOf(col2 || col1)], val2)) {
                 newItem.data_values[item.data_keys.indexOf(col1)] = val1;
             }
             return newItem;
         })
-        setProject({ ...project, markers: newMarkersArr })
+        newMarkersArr.forEach(marker => {
+            API.updateMarker({ ...marker, data_values: marker.data_values })
+            .then(res => {
+                setUpdate(Math.random())
+            })
+        })
     }
 
     const handleOp3 = () => {
@@ -563,7 +568,7 @@ export default function Project(props) {
                     <Marker 
                         key={marker._id} 
                         marker={marker} 
-                        setUpdate={setUpdate} 
+                        setUpdate={setUpdate}
                         setSelectedMarker={setSelectedMarker}
                         handleManualSelection={handleManualSelection}
                         isManuallySelectedFromOutside={manuallySelectedMarkers.includes(marker._id)}

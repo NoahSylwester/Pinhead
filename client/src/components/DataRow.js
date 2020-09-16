@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function DataRow(props) {
 
     const [key, setKey] = useState(props.data_key);
     const [value, setValue] = useState(props.data_value)
+
+    useEffect(() => {
+        setValue(props.data_value)
+    }, [props.data_value])
 
     return (
         <div style={{ padding: 5, backgroundColor: "whitesmoke" }}>
