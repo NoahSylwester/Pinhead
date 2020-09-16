@@ -42,7 +42,10 @@ export default function Signup(props) {
             alert("User successfully created")
             history.push("/")
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+            setLoading(false)
+            console.log(err)
+        })
     }
 
     return (

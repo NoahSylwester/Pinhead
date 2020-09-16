@@ -45,7 +45,10 @@ export default function Login(props) {
             localStorage.setItem("userId", res.data.userId)
             history.push("/dashboard")
         })
-        .catch(err => setErrorMessage(err.response.data.error))
+        .catch(err => {
+            setLoading(false)
+            setErrorMessage(err.response.data.error)
+        })
     }
 
     return (
