@@ -28,13 +28,13 @@ const LoadingSVGWrapper = styled.svg`
     position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: ${props => props.small ? "20vh" : "100vh"};
+    width: ${props => props.small ? "100%" : "100vw"};
+    height: ${props => props.small ? "100%" : "100vh"};
     margin: auto;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0,0,0,0.1);
+    background-color: ${props => props.small ? "none" : `rgba(0,0,0,0.1)`};
 `
 
 const LoadingCircle = styled.circle`
@@ -55,7 +55,7 @@ export default function SVGLoadingIcon(props) {
                     cx="50%"
                     cy="50%"
                     r="15"
-                    fill={"white"}
+                    fill={props.small ? "black" :"white"}
                     animationDuration={`${props.duration || 0.7}s`}
                     spinRadius="50"
                 ></LoadingCircle>

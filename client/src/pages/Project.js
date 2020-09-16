@@ -623,8 +623,10 @@ export default function Project(props) {
             </DataSection>
 
             <ImageSection>
+                {console.log(project)}
                 {project._id ? 
                 <Canvas 
+                    isImageUploaded={project.isImageUploaded}
                     imagePath={`/api/projects/image/${project._id}`} 
                     markers={project.markers} project={project} 
                     setUpdate={setUpdate} 
@@ -638,7 +640,6 @@ export default function Project(props) {
                     setMouseHoveredMarkerId={setMouseHoveredMarkerId}
                 >
                 </Canvas> : <></>}
-                {/* <img src={`/api/projects/image/${project._id}`} /> */}
             </ImageSection>
         </Page>
     )

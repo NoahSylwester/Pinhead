@@ -19,11 +19,6 @@ function App() {
   return (
     <Container>
       <BrowserRouter>
-        <div>
-          {/* <Link to="/">LOGIN</Link>
-          <Link to="/dashboard">DASHBOARD</Link> */}
-          {/* <Link to="/project">PROJECT</Link> */}
-        </div>
         <Switch>
           <Route exact path="/" component={Login}></Route>
           <Route path="/signup" component={Signup}></Route>

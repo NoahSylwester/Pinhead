@@ -19,6 +19,7 @@
     "nodemon": "^1.18.7"
   },
   "dependencies": {
+    "@react-hook/window-size": "^3.0.7",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.5",
     "dotenv": "^8.2.0",

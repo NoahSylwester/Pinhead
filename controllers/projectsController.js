@@ -50,8 +50,14 @@ module.exports = {
       .findById(req.params.id)
       .populate("author", "_id")
       .populate("markers")
-      .select("-image")
-      .then(dbModel => res.json(dbModel))
+      // .select("-image")
+      .then(dbModel => {
+        console.log(dbModel)
+        if (dbModel.image) {
+          dbModel.image = true;
+        }
+        res.json(dbModel)
+      })
       .catch(err => res.status(422).json(err));
   },
   create: function(req, res) {
@@ -65,7 +71,6 @@ module.exports = {
     .catch(err => res.status(422).json(err));
   },
   update: function(req, res) {
-    console.log(req.body)
     db.Project
       .findOneAndUpdate({ _id: req.params.id }, { ...req.body.project })
       .populate("author", "_id")
@@ -81,12 +86,10 @@ module.exports = {
         image:  new Buffer.from(encode_image, 'base64')
     };
     db.Project
-      .findOneAndUpdate({ _id: req.params.id }, { ...finalImg })
+      .findOneAndUpdate({ _id: req.params.id }, { ...finalImg, isImageUploaded: true })
       // .populate("author", "_id")
       .select("-image")
       .then(dbModel => {
-        console.log('success')
-        console.log(dbModel)
         fs.unlinkSync(req.file.path)
         return res.json(dbModel)
       })
@@ -107,7 +110,6 @@ module.exports = {
       .catch(err => res.status(422).json(err));
   },
   serveBinaryImage: function(req, res) {
-    console.log('serving')
       db.Project
       .findById(req.params.id)
       .then((result) => {

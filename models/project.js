@@ -8,6 +8,11 @@ const projectSchema = new Schema({
     type: Buffer,
     required: false,
   },
+  isImageUploaded: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
   contentType: {
     type: String,
     required: true,
