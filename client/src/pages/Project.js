@@ -177,6 +177,8 @@ export default function Project(props) {
     })
 
     useEffect(() => {
+        API.checkUser()
+        .catch(err => history.push("/"))
         API.queryProject(id)
         .then(response => {
             setProject(response.data)

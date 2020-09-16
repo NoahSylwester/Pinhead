@@ -28,6 +28,8 @@ export default function Dashboard(props) {
     const history = useHistory();
 
     useEffect(() => {
+        API.checkUser()
+        .catch(err => history.push("/"))
         API.queryProjects()
         .then(response => {
             setProjects(response.data)
