@@ -83,6 +83,14 @@ export default function Marker(props) {
         })
     }
 
+    // useEffect(() => {
+    //     API.updateMarker({ ...props.marker, data_values: props.marker.data_values })
+    //     .then(res => {
+    //         console.log(res)
+    //         props.setUpdate(Math.random())
+    //     })
+    // }, [props.marker.data_values])
+
     const handleDeleteRow = index => {
         const data_keys = props.marker.data_keys;
         const data_values = props.marker.data_values;

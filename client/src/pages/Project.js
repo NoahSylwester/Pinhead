@@ -82,6 +82,9 @@ const Operation = styled.div`
     i {
         margin: 3px;
     }
+    button {
+        width: 100%;
+    }
 `
 
 const FilterSortPanel = styled.div`
@@ -341,7 +344,16 @@ export default function Project(props) {
 
     const handleOp2 = event => {
         event.preventDefault()
+        const { col1, col2, val1, val2, comparator } = op2Config;
 
+        const newMarkersArr = project.markers.map((item, i) => {
+            let newItem = { ...item }
+            if (handleSwitchComparatorOperation(comparator, item.data_values[item.data_keys.indexOf(col2 || col1)], val2)) {
+                newItem.data_values[item.data_keys.indexOf(col1)] = val1;
+            }
+            return newItem;
+        })
+        setProject({ ...project, markers: newMarkersArr })
     }
 
     const handleOp3 = () => {
@@ -443,11 +455,12 @@ export default function Project(props) {
                             </div>
                             <i style={{ display: "inline-block", fontSize: "0.2rem" }}>Value defaults to 'anything'</i>
                             <input type="submit" value="Go" />
+                            <button onClick={() => setManuallySelectedMarkers([])}>Clear selections</button>
                         </form>
                     </Operation>
                     <Operation>
                         <p>Replace all values of</p>
-                        <form style={{ display: "flex", flexDirection: "column" }}>
+                        <form onSubmit={handleOp2} style={{ display: "flex", flexDirection: "column" }}>
                             <div style={{ display: "flex" }}>
                                 <input onChange={event => setOp2Config({ ...op2Config, col1: event.target.value})} value={op2Config.col1} style={{width: "50%"}} placeholder="Field 1" />
                                 <p style={{margin: 0}}>&nbsp;with&nbsp;</p>
@@ -471,7 +484,7 @@ export default function Project(props) {
                     </Operation>
                     <Operation>
                         <p>Display all values of</p>
-                        <form style={{ display: "flex", flexDirection: "column" }}>
+                        <form onSubmit={handleOp3} style={{ display: "flex", flexDirection: "column" }}>
                             <div style={{ display: "flex", justifyContent: "center" }}>
                                 <input onChange={event => setOp3Config({ ...op3Config, colToDisplay: event.target.value})} value={op3Config.colToDisplay} style={{width: "50%"}} placeholder="Field 1" />
                             </div>
