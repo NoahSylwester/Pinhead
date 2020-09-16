@@ -68,6 +68,22 @@ const OperationsPanel = styled.div`
     }
 `
 
+const Operation = styled.div`
+    margin: 2px;
+    padding: 5px;
+    border: 1px darkgray solid;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    p, i {
+        text-align: center;
+    }
+    i {
+        margin: 3px;
+    }
+`
+
 const FilterSortPanel = styled.div`
     background-color: lightgray;
     padding: 5px;
@@ -134,6 +150,24 @@ export default function Project(props) {
         filteringValue: "",
         sort: false,
         filter: false,
+    })
+    const [op1Config, setOp1Config] = useState({
+        col: "",
+        val: "",
+        comparator: "=="
+    })
+    const [op2Config, setOp2Config] = useState({
+        col1: "",
+        val1: "",
+        col2: "",
+        val2: "",
+        comparator: "=="
+    })
+    const [op3Config, setOp3Config] = useState({
+        colToDisplay: "",
+        col: "",
+        val: "",
+        comparator: ""
     })
 
     useEffect(() => {
@@ -279,6 +313,50 @@ export default function Project(props) {
         }
     }
 
+    const handleSwitchComparatorOperation = (comparator, operand1, operand2) => {
+        switch (comparator) {
+            case ">":
+                return operand1 > operand2;
+            case "<":
+                return operand1 < operand2;
+            case ">=":
+                return operand1 >= operand2;
+            case "<=":
+                return operand1 <= operand2;
+            default:
+                return operand1 === operand2;
+        }
+    }
+
+    const handleOp1 = event => {
+        event.preventDefault();
+        let { col, val, comparator } = op1Config;
+
+        console.log(col, val, comparator)
+        setManuallySelectedMarkers([])
+        let selectedMarkersArray;
+
+        if (val) {
+            selectedMarkersArray = project.markers.filter(item => {
+                return handleSwitchComparatorOperation(comparator, item.data_values[item.data_keys.indexOf(col)], val)
+            })
+        }
+        else {
+            selectedMarkersArray =  project.markers.filter(item => {
+                return item.data_keys.includes(col)
+            })
+        }
+        setManuallySelectedMarkers(selectedMarkersArray.map(item => item._id))
+    }
+
+    const handleOp2 = () => {
+        
+    }
+
+    const handleOp3 = () => {
+        
+    }
+
     useEffect(() => {
         if (sortingConfig.filteringCol && sortingConfig.filteringValue) {
             setSortingConfig({ ...sortingConfig, filter: true })
@@ -329,10 +407,11 @@ export default function Project(props) {
                 {definePresetsPressed ?
                 <PresetsPanel>
                     <h3 style={{ textAlign: "center" }}>PRESETS</h3>
-                    <div>
+                    {presetDataKeys.length ?
+                    (<div style={{ marginLeft: 10 }}>
                         <input style={{width: "40%"}} value="Field names" disabled />
                         <input style={{width: "40%"}} value="Default values" disabled />
-                    </div>
+                    </div>) : <></>}
                     {presetDataKeys.length ? presetDataKeys.map((data_key, i) => {
                         return (
                         <PresetDataRow
@@ -345,7 +424,7 @@ export default function Project(props) {
                                 handleUpdatePresetRowValue
                             }}
                         />)
-                    }) : <p style={{textAlign: "center", margin: 5}}>No presets!</p>}
+                    }) : <p style={{textAlign: "center", marginBottom: 15}}>No presets!</p>}
                     <button onClick={handleAddPresetRow}>Add another row</button>
                     <button onClick={handleClearPresetRows}>Clear</button>
                     <button onClick={() => setDefinePresetsPressed(false)}>Hide</button>
@@ -356,9 +435,71 @@ export default function Project(props) {
                 {showOperationsPanel ? 
                 <OperationsPanel>
                     <h3 style={{ textAlign: "center" }}>OPERATIONS</h3>
-                    <p>Select all markers with COL_NAME: VALUE</p>
-                    <p>Replace all values of COL_NAME1 with VALUE1 if this.COL_NAME2 is VALUE2</p>
-                    <p>Display all values of COL_NAME if COL_NAME is VALUE</p>
+                    <i style={{ display: "inline-block", fontSize: "0.2rem" }}>* = optional value</i>
+                    <Operation>
+                        <p>Select all markers where</p>
+                        <form onSubmit={handleOp1} style={{ display: "flex", flexDirection: "column" }}>
+                            <div style={{ display: "flex" }}>
+                                <input onChange={event => setOp1Config({ ...op1Config, col: event.target.value})} value={op1Config.col} style={{width: "50%"}} placeholder="Field" />
+                                <select onChange={event => setOp1Config({ ...op1Config, comparator: event.target.value })} value={op1Config.comparator}>
+                                    <option value="==">==</option>
+                                    <option value=">">&gt;</option>
+                                    <option value="<">&lt;</option>
+                                    <option value=">=">&gt;=</option>
+                                    <option value="<=">&lt;=</option>
+                                </select>
+                                <input onChange={event => setOp1Config({ ...op1Config, val: event.target.value})} value={op1Config.val} style={{width: "50%"}} placeholder="Value*" />
+                            </div>
+                            <i style={{ display: "inline-block", fontSize: "0.2rem" }}>Value defaults to 'anything'</i>
+                            <input type="submit" value="Go" />
+                        </form>
+                    </Operation>
+                    <Operation>
+                        <p>Replace all values of</p>
+                        <form style={{ display: "flex", flexDirection: "column" }}>
+                            <div style={{ display: "flex" }}>
+                                <input onChange={event => setOp2Config({ ...op2Config, col1: event.target.value})} value={op2Config.col1} style={{width: "50%"}} placeholder="Field 1" />
+                                <p style={{margin: 0}}>&nbsp;with&nbsp;</p>
+                                <input onChange={event => setOp2Config({ ...op2Config, val1: event.target.value})} value={op2Config.val1} style={{width: "50%"}} placeholder="Value 1" />
+                            </div>
+                            <div style={{ display: "flex" }}>
+                                <p style={{margin: 0}}>if&nbsp;</p>
+                                <input onChange={event => setOp2Config({ ...op2Config, col2: event.target.value})} value={op2Config.col2} style={{width: "50%"}} placeholder="Field 2*" />
+                                <select onChange={event => setOp2Config({ ...op2Config, comparator: event.target.value })} value={op2Config.comparator}>
+                                    <option value="==">==</option>
+                                    <option value=">">&gt;</option>
+                                    <option value="<">&lt;</option>
+                                    <option value=">=">&gt;=</option>
+                                    <option value="<=">&lt;=</option>
+                                </select>
+                                <input onChange={event => setOp2Config({ ...op2Config, val2: event.target.value})} value={op2Config.val2} style={{width: "50%"}} placeholder="Value 2" />
+                            </div>
+                            <i style={{ display: "inline-block", fontSize: "0.2rem" }}>Field 2 defaults to Field 1</i>
+                            <input type="submit" value="Go" />
+                        </form>
+                    </Operation>
+                    <Operation>
+                        <p>Display all values of</p>
+                        <form style={{ display: "flex", flexDirection: "column" }}>
+                            <div style={{ display: "flex", justifyContent: "center" }}>
+                                <input onChange={event => setOp3Config({ ...op3Config, colToDisplay: event.target.value})} value={op3Config.colToDisplay} style={{width: "50%"}} placeholder="Field 1" />
+                            </div>
+                            <div style={{ display: "flex" }}>
+                                <p style={{margin: 0}}>where&nbsp;</p>
+                                <input onChange={event => setOp3Config({ ...op3Config, col: event.target.value})} value={op3Config.col} style={{width: "50%"}} placeholder="Field 2*" />
+                                <select onChange={event => setOp3Config({ ...op3Config, comparator: event.target.value })} value={op3Config.comparator}>
+                                    <option value="==">==</option>
+                                    <option value=">">&gt;</option>
+                                    <option value="<">&lt;</option>
+                                    <option value=">=">&gt;=</option>
+                                    <option value="<=">&lt;=</option>
+                                </select>
+                                <input onChange={event => setOp3Config({ ...op3Config, val: event.target.value})} value={op3Config.val} style={{width: "50%"}} placeholder="Value*" />
+                            </div>
+                            <i style={{ display: "inline-block", fontSize: "0.2rem" }}>Field 2 defaults to Field 1, Value defaults to 'anything'</i>
+                            <input type="submit" value="Go" />
+                        </form>
+                    </Operation>
                     <button onClick={() => setShowOperationsPanel(false)}>Hide</button>
                 </OperationsPanel> 
                     : 
@@ -369,20 +510,20 @@ export default function Project(props) {
                     <h3 style={{ textAlign: "center" }}>FILTER/SORT</h3>
                     <p>Filter by</p>
                     <div style={{ display: "flex" }}>
-                        <input onChange={event => setSortingConfig({ ...sortingConfig, filteringCol: event.target.value})} value={sortingConfig.filteringCol} style={{width: "50%"}} placeholder="Field name" />
+                        <input onChange={event => setSortingConfig({ ...sortingConfig, filteringCol: event.target.value})} value={sortingConfig.filteringCol} style={{width: "50%"}} placeholder="Field" />
                         <select onChange={event => setSortingConfig({ ...sortingConfig, comparator: event.target.value })} value={sortingConfig.comparator}>
                             <option value="==">==</option>
                             <option value=">">&gt;</option>
                             <option value="<">&lt;</option>
-                            <option value=">=">&lt;=</option>
-                            <option value="<=">&gt;=</option>
+                            <option value=">=">&gt;=</option>
+                            <option value="<=">&lt;=</option>
                         </select>
                         <input onChange={event => setSortingConfig({ ...sortingConfig, filteringValue: event.target.value})} value={sortingConfig.filteringValue} style={{width: "50%"}} placeholder="Value" />
                     </div>
 
                     <p>Sort by</p>
-                    <div style={{ display: "flex" }}>
-                        <input onChange={event => setSortingConfig({ ...sortingConfig, sort: !!event.target.value, sortingCol: event.target.value })} value={sortingConfig.sortingCol} style={{width: "50%"}} placeholder="Field name" />
+                    <div style={{ display: "flex", marginBottom: 10 }}>
+                        <input onChange={event => setSortingConfig({ ...sortingConfig, sort: !!event.target.value, sortingCol: event.target.value })} value={sortingConfig.sortingCol} style={{width: "50%"}} placeholder="Field" />
                         <select onChange={event => setSortingConfig({ ...sortingConfig, asc: event.target.value === "true" ? true : false})} value={sortingConfig.asc} style={{width: "50%"}}>
                             <option value={true}>ascending</option>
                             <option value={false}>descending</option>

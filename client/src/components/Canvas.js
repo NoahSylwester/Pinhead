@@ -94,7 +94,7 @@ function Canvas(props) {
                 }
             }
         }
-      }, [props.project, props.selectedMarker, props.width, props.height]);
+      }, [props.project, props.selectedMarker, props.width, props.height, props.manuallySelectedMarkers]);
 
     const handleMouseDown = event => {
         let canvas = document.querySelector("canvas");

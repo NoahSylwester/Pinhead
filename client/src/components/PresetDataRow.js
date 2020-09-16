@@ -20,10 +20,10 @@ export default function PresetDataRow(props) {
     }, [value])
 
     return (
-        <div>
+        <div style={{ marginLeft: 10 }}>
             <input style={{width: "40%"}} type="text" value={key} onChange={event => setKey(event.target.value)} />
             <input style={{width: "40%"}} type="text" value={value} onChange={event => setValue(event.target.value)} />
-            <button style={{width: "10%"}} onClick={() => handleDeletePresetRow(props.index)}>X</button>
+            <button style={{width: "5%", padding: "0"}} onClick={() => handleDeletePresetRow(props.index)}>X</button>
         </div>
     )
 }
