@@ -33,6 +33,11 @@ export default function Signup(props) {
     const [password, setPassword] = useState("")
     const [loading, setLoading] = useState(false)
 
+    useEffect(() => {
+        API.checkUser()
+        .catch(err => history.push("/dashboard"))
+    }, [])
+
     const handleSignup = event => {
         event.preventDefault()
         setLoading(true)

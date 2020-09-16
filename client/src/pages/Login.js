@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import API from '../utils/API';
 import { Link, useHistory } from 'react-router-dom';
@@ -34,6 +34,11 @@ export default function Login(props) {
     const [password, setPassword] = useState("")
     const [errorMessage, setErrorMessage] = useState("")
     const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        API.checkUser()
+        .catch(err => history.push("/dashboard"))
+    }, [])
 
     const handleLogin = event => {
         event.preventDefault()
