@@ -27,7 +27,7 @@ function Canvas(props) {
         var image = new Image();
         image.src = props.imagePath;
         setImageState(image);
-        console.log(image, imageState)
+        // console.log(image, imageState)
         image.onload = function() {
             // logic to fit image into container
             imageRatio = image.width / image.height

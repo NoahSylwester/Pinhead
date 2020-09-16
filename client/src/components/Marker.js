@@ -113,6 +113,10 @@ export default function Marker(props) {
         props.handleManualSelection(props.marker._id, isManuallySelected)
     }, [isManuallySelected])
 
+    useEffect(() => {
+        setIsManuallySelected(props.isManuallySelectedFromOutside)
+    }, [props.isManuallySelectedFromOutside])
+
     return (
         <ListItem onMouseEnter={handleOnMouseEnter} onMouseLeave={handleOnMouseLeave}>
             <ManualSelectionButton onClick={() => setIsManuallySelected(!isManuallySelected)} bool={isManuallySelected}>{isManuallySelected ? "Unselect" : "Select"}</ManualSelectionButton>

@@ -198,18 +198,7 @@ export default function Project(props) {
         let processedMarkersArray = projectData.markers.slice();
         if (config.filter) {
             processedMarkersArray =  processedMarkersArray.filter(item => {
-                switch (config.comparator) {
-                    case ">":
-                        return item.data_values[item.data_keys.indexOf(config.filteringCol)] > config.filteringValue;
-                    case "<":
-                        return item.data_values[item.data_keys.indexOf(config.filteringCol)] < config.filteringValue;
-                    case ">=":
-                        return item.data_values[item.data_keys.indexOf(config.filteringCol)] >= config.filteringValue;
-                    case "<=":
-                        return item.data_values[item.data_keys.indexOf(config.filteringCol)] <= config.filteringValue;
-                    default:
-                        return item.data_values[item.data_keys.indexOf(config.filteringCol)] === config.filteringValue;
-                }
+                return handleSwitchComparatorOperation(config.comparator, item.data_values[item.data_keys.indexOf(config.filteringCol)], config.filteringValue)
               })
         }
         if (config.sort) {
@@ -299,9 +288,12 @@ export default function Project(props) {
 
     const handleManualSelection = (id, isManuallySelected) => {
         let newArray = manuallySelectedMarkers.slice();
+        console.log(id, newArray, isManuallySelected)
         switch (isManuallySelected) {
             case true:
-                newArray.push(id)
+                if (!newArray.includes(id)) {
+                    newArray.push(id)
+                }
                 setManuallySelectedMarkers(newArray);
                 return;
             case false:
@@ -331,10 +323,8 @@ export default function Project(props) {
     const handleOp1 = event => {
         event.preventDefault();
         let { col, val, comparator } = op1Config;
-
-        console.log(col, val, comparator)
-        setManuallySelectedMarkers([])
         let selectedMarkersArray;
+        setManuallySelectedMarkers([])
 
         if (val) {
             selectedMarkersArray = project.markers.filter(item => {
@@ -349,8 +339,9 @@ export default function Project(props) {
         setManuallySelectedMarkers(selectedMarkersArray.map(item => item._id))
     }
 
-    const handleOp2 = () => {
-        
+    const handleOp2 = event => {
+        event.preventDefault()
+
     }
 
     const handleOp3 = () => {
@@ -562,6 +553,7 @@ export default function Project(props) {
                         setUpdate={setUpdate} 
                         setSelectedMarker={setSelectedMarker}
                         handleManualSelection={handleManualSelection}
+                        isManuallySelectedFromOutside={manuallySelectedMarkers.includes(marker._id)}
                     >
                     </Marker>)
                 }) : <p>{project.markers.length ? "No markers found under current parameters." : "No markers yet. Upload an image in settings, then click the image to add a marker!"}</p>}
