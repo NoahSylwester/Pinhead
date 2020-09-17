@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import logo from '../pinhead.png'
 import API from '../utils/API';
 import { useParams, Link, useHistory } from 'react-router-dom';
 import Marker from '../components/Marker';
@@ -26,6 +27,7 @@ const BackButton = styled(Link)`
 `
 
 const DataSection = styled.div`
+    position: relative;
     width: 30%;
     height: 100%;
     overflow: scroll;
@@ -397,8 +399,8 @@ export default function Project(props) {
 
     return (
         <Page>
-            <BackButton to={"/dashboard"}>Back</BackButton>
             <DataSection>
+            <BackButton to={"/dashboard"}><img style={{ width: 40 }} src={logo} alt="logo"/></BackButton>
                 <h1 contentEditable="true" style={{ textAlign: "center" }} onBlur={handleTitleUpdate}>{project.title}</h1>
                 
                 {showSettings ?
