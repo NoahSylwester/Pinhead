@@ -36,8 +36,7 @@ function Canvas(props) {
 
     useEffect(() => {
         renderCanvas()
-    },[theImageRatio, 
-        mouseX, mouseY, props.project, props.selectedMarker, width, height, props.manuallySelectedMarkers, props.displayedMarkers])
+    },[theImageRatio, mouseX, mouseY, props.project, props.selectedMarker, width, height, props.manuallySelectedMarkers, props.displayedMarkers])
 
     const renderCanvas = () => {
         if (theImageRatio) {
@@ -78,27 +77,27 @@ function Canvas(props) {
                 switch (props.project.markers[i].shape) {
                     case "circle":
                         c.beginPath();
-                        c.arc(x, y, 3, 0, 2 * Math.PI);
+                        c.arc(x, y, 4.25, 0, 2 * Math.PI);
                         c.fill();
                         break;
                     case "square":
-                        c.fillRect(x - 3, y - 3, 6, 6);
+                        c.fillRect(x - 4.25, y - 4.25, 8.5, 8.5);
                         break;
                     case "triangle":
                         c.beginPath();
-                        c.moveTo(x, y - 3);
-                        c.lineTo(x - Math.sqrt(13), y + 3);
-                        c.lineTo(x + Math.sqrt(13), y + 3);
-                        c.lineTo(x, y - 3);
+                        c.moveTo(x, y - 6);
+                        c.lineTo(x - Math.sqrt(20), y + 3);
+                        c.lineTo(x + Math.sqrt(20), y + 3);
+                        c.lineTo(x, y - 6);
                         c.fill();
                         break;
                     case "rhombus":
                         c.beginPath();
-                        c.moveTo(x, y - 4);
-                        c.lineTo(x - 4, y);
-                        c.lineTo(x, y + 4);
-                        c.lineTo(x + 4, y);
-                        c.lineTo(x, y - 4);
+                        c.moveTo(x, y - 5.5);
+                        c.lineTo(x - 5.5, y);
+                        c.lineTo(x, y + 5.5);
+                        c.lineTo(x + 5.5, y);
+                        c.lineTo(x, y - 5.5);
                         c.fill();
                         break;
                     default:

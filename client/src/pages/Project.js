@@ -383,9 +383,6 @@ export default function Project(props) {
             })
         }
         setDisplayedMarkers(newDisplayedMarkersArray.map(item => item._id))
-            // return { _id: item._id, data: item.data_values[item.data_keys.indexOf(colToDisplay)] }
-            // })
-        // )
     }
 
     useEffect(() => {
@@ -625,12 +622,12 @@ export default function Project(props) {
             </DataSection>
 
             <ImageSection>
-                {console.log(project)}
                 {project._id ? 
                 <Canvas 
                     isImageUploaded={project.isImageUploaded}
                     imagePath={`/api/projects/image/${project._id}`} 
-                    markers={project.markers} project={project} 
+                    markers={project.markers}
+                    project={project} 
                     setUpdate={setUpdate} 
                     selectedMarker={selectedMarker} 
                     selectorColor={selectorColor}
