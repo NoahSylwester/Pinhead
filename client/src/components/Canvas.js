@@ -36,7 +36,8 @@ function Canvas(props) {
 
     useEffect(() => {
         renderCanvas()
-    },[mouseX, mouseY, props.project, props.selectedMarker, width, height, props.manuallySelectedMarkers, props.displayedMarkers])
+    },[theImageRatio, 
+        mouseX, mouseY, props.project, props.selectedMarker, width, height, props.manuallySelectedMarkers, props.displayedMarkers])
 
     const renderCanvas = () => {
         if (theImageRatio) {
