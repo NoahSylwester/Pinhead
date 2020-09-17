@@ -37,7 +37,10 @@ export default function Login(props) {
 
     useEffect(() => {
         API.checkUser()
-        .catch(err => history.push("/dashboard"))
+        .then(() => {
+            history.push("/dashboard")
+        })
+        .catch(err => console.log(err))
     }, [])
 
     const handleLogin = event => {

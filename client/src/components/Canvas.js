@@ -46,7 +46,6 @@ function Canvas(props) {
             // fill container with canvas
             canvas.width = canvasContainer.offsetWidth
             canvas.height = canvasContainer.offsetHeight
-            console.log(canvasContainer.offsetHeight)
             // erase previous canvas
             let c = canvas.getContext("2d");
             c.clearRect(0, 0, canvas.width, canvas.height)
