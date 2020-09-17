@@ -5,6 +5,7 @@ import { useParams, Link, useHistory } from 'react-router-dom';
 import Marker from '../components/Marker';
 import Canvas from '../components/Canvas';
 import PresetDataRow from '../components/PresetDataRow';
+import ExcelExporter from '../components/ExcelExporter';
 
 const Page = styled.div`
     display: flex;
@@ -427,6 +428,12 @@ export default function Project(props) {
                         <p style={{marginRight: 5}}>Selector color</p>
                         <input style={{ borderRadius: 30, width: 30, height: 30}} type="color" value={selectorColor} onChange={event => setSelectorColor(event.target.value)}/>
                     </div>
+                    <div style={{ textAlign: "center" }}>
+                        <ExcelExporter 
+                            title={project.title}
+                            markers={project.markers}
+                        />
+                    </div>
                     <button onClick={() => setShowSettings(false)}>Hide Settings</button>
                 </Settings>
                 :
@@ -613,9 +620,7 @@ export default function Project(props) {
                         setSelectedMarker={setSelectedMarker}
                         handleManualSelection={handleManualSelection}
                         isManuallySelectedFromOutside={manuallySelectedMarkers.includes(marker._id)}
-                    >
-                        {console.log(manuallySelectedMarkers.length)}
-                    </Marker>)
+                    />)
                 }) : <p>{project.markers.length ? "No markers found under current parameters." : "No markers yet. Upload an image in settings, then click the image to add a marker!"}</p>}
 
                 </div>
