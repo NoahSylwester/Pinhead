@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import logo from '../pinhead.png'
+import logo from '../pinhead-small.png'
 import API from '../utils/API';
 import { useParams, Link, useHistory } from 'react-router-dom';
 import Marker from '../components/Marker';
