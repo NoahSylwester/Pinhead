@@ -12,7 +12,7 @@ const Container = styled.div`
     align-items: center;
     width: 100vw;
     height: 100vh;
-    margin-bottom: 20%;
+    margin-bottom: 13%;
 `
 
 const LogoutButton = styled.button`

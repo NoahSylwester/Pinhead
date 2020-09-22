@@ -18,6 +18,10 @@ const Column = styled.div`
     display: inline-block;
     width: 50%;
     text-align: center;
+    ${props => props.markerCount ? 
+    `font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif; font-size: 0.8rem;` : ``}
 `
 
 export default function ProjectItem(props) {
@@ -34,7 +38,7 @@ export default function ProjectItem(props) {
         <Item to={`/project/${props.project._id}`}>
             <Column>{props.project.title}</Column>
             {console.log(props.project)}
-            <Column>markers: {props.project.markers.length}</Column>
+            <Column markerCount>markers: {props.project.markers.length}</Column>
         </Item>
     )
 }

@@ -17,13 +17,18 @@ const ManualSelectionButton = styled.button`
     right: 0;
     background-color: ${props => props.bool ? "lightgreen": "lightgray"};
     border: none;
+    border-radius: 0;
+    border-bottom-left-radius: 5px;
 `
 
 const ColorSelectionInput = styled.input`
     position: absolute;
     top: 20px;
+    background-color: white;
     right: 0;
+    border: 0;
     border-radius: 30px;
+    margin-top: 1px;
     width: 20px;
     height: 20px;
 `

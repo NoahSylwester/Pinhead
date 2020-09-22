@@ -67,7 +67,7 @@ export default function Login(props) {
             <></>}
 
             <img src={logo} style={{ objectFit: "cover", width: 200}} />
-            <h1 style={{ margin: 20 }}>PINHEAD</h1>
+            <h1 style={{ margin: "0 20px 20px 20px", fontSize: "2.8rem" }}>PINHEAD</h1>
             <LoginForm>
                 <input type="text" placeholder="email" value={email} onChange={event => setEmail(event.target.value)} />
                 <input type="password" placeholder="password" value={password} onChange={event => setPassword(event.target.value)} />
