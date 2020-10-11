@@ -2,12 +2,10 @@
 
 Simple software to map data to points on an image.
 
-For Winston.
+Stack:
+    React
+    MongoDB
+    Express
+    Node
 
-TODO
-    highlight all matching markers
-    display values of markers
-    change values of all matching markers
-    -X- static manual highlighting
-    UI polishing
-    export as excel spreadsheet?
+For Winston.
